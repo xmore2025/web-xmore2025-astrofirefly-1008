@@ -1,6 +1,6 @@
 {
 	// Cloudflare Worker 名称规则：只允许字母数字和短横线，禁止下划线。
-	// 对应仓库 xmore2025/web_xmore2025_astrofirefly-1008
+	// 对应仓库 xmore2025/web-xmore2025-astrofirefly-1008（已与仓库名统一为连字符写法）
 	"name": "web-xmore2025-astrofirefly-1008",
 	"compatibility_date": "2026-10-07",
 	"compatibility_flags": ["nodejs_compat"],

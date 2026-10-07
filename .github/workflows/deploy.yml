@@ -1,8 +1,8 @@
 name: Deploy to GitHub Pages
 
+# 站点正式部署走 Cloudflare（见 DEPLOY.md 第四节），本流程只作为 GitHub Pages 备用方案。
+# 不做 push 自动触发：Pages 未在仓库设置里开启时每次推送都会红叉，需要时手动 Run workflow。
 on:
-  push:
-    branches: [ master ]
   workflow_dispatch:
 
 # Pages 部署需要的权限

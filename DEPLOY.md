@@ -14,9 +14,11 @@
 | `src/config/siteConfig.ts` | `title` / `subtitle` / `description` / `keywords` | Xmore's Blog 等 | 站点名称与描述 |
 | `src/config/profileConfig.ts` | `name` / `bio` / `links` | Xmore / GitHub / 邮箱 | 侧边栏个人卡片 |
 | `src/config/backgroundWallpaper.ts` | `homeText.title` / `subtitle` / `links` | 同上 | 首页横幅文案与图标链接 |
-| `src/config/navBarConfig.ts` | GitHub 外链 | `YOUR-GITHUB-ID` | 导航栏 GitHub 图标 |
-| `src/content/spec/friends.mdx` | `export const site` | 占位 | 友链页的本站名片 |
 | `src/config/siteConfig.ts` | `siteStartDate` | `2026-01-01` | 站点起始日期 |
+| `src/config/profileConfig.ts` / `backgroundWallpaper.ts` | 邮箱链接 | 已注释掉 | 有邮箱后取消注释，填 `mailto:你的邮箱` |
+| `src/content/spec/friends.mdx` | `site.email` | `YOUR@MAIL.COM` | 友链页展示的联系邮箱 |
+
+GitHub 相关链接已全部填成 `https://github.com/xmore2025`，不用再改。
 
 全局替换占位符即可：
 
@@ -73,11 +75,18 @@ published: 2026-10-07
 
 ### 1. Git 仓库（已完成 ✅）
 
-**仓库**：<https://github.com/xmore2025/web_xmore2025_astrofirefly-1008>（公开）
+**仓库**：<https://github.com/xmore2025/web-xmore2025-astrofirefly-1008>（公开）
+
+> 仓库名已统一为连字符 `web-xmore2025-astrofirefly-1008`，与 Cloudflare Worker 名完全一致
+> （Cloudflare 的 `name` 不允许下划线，见下方说明）。改名后本地远端已同步：
+> ```bash
+> git remote set-url origin https://xmore2025@github.com/xmore2025/web-xmore2025-astrofirefly-1008.git
+> ```
+> GitHub 会自动把旧地址重定向到新地址，但本地远端最好显式改一次，避免以后写操作走重定向。
 
 | 项 | 值 |
 |---|---|
-| 远端 | `https://xmore2025@github.com/xmore2025/web_xmore2025_astrofirefly-1008.git` |
+| 远端 | `https://xmore2025@github.com/xmore2025/web-xmore2025-astrofirefly-1008.git` |
 | 分支 | `main` |
 | 首次提交 | `54d5932` init: 简约版 Firefly 博客 (Astro + Cloudflare) |
 | 提交身份 | `xmore2025 <336082097+xmore2025@users.noreply.github.com>` |
@@ -92,6 +101,10 @@ git push
 
 仓库根目录下的 `setup-repo.ps1` 保留着初始化流程，换机器重新搭环境时可直接跑。
 
+**GitHub Actions**：`.github/workflows/` 下三个流程已从 `master` 改为监听 `main`（主题模板默认是 `master`，
+在我们仓库里等于永不触发）。其中 `deploy.yml`（GitHub Pages）改为**仅手动触发**——正式部署走 Cloudflare，
+Pages 没在仓库设置里开启，自动跑只会每次推送都报红。
+
 > **踩过的两个坑（已修）**
 >
 > 1. **本机 git 代理指向了没监听的端口**：全局原本是 `socks5://127.0.0.1:10808`，该端口没有进程，导致所有 GitHub 操作超时（这也是最初 clone 失败的原因）。
@@ -103,7 +116,7 @@ git push
 > 2. **凭据管理器里存的是另一个账号**：首次 push 返回 `Permission denied to xmind-2046`。
 >    解决方式是远端 URL 带用户名 + 重新授权：
 >    ```bash
->    git remote set-url origin https://xmore2025@github.com/xmore2025/web_xmore2025_astrofirefly-1008.git
+>    git remote set-url origin https://xmore2025@github.com/xmore2025/web-xmore2025-astrofirefly-1008.git
 >    git credential-manager github login
 >    git push -u origin main
 >    ```
@@ -123,19 +136,21 @@ git push
 ```jsonc
 {
   // Cloudflare Worker 名称规则：只允许字母数字和短横线，禁止下划线。
-  // 对应仓库 xmore2025/web_xmore2025_astrofirefly-1008
+  // 对应仓库 xmore2025/web-xmore2025-astrofirefly-1008
   "name": "web-xmore2025-astrofirefly-1008",
   "compatibility_date": "2026-10-07",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "./dist" }
+  "assets": { "directory": "./dist" },
+  // Workers Logs 采集。新建 Worker 默认为 true；纯静态站用不到日志与追踪，
+  // 关掉可避免产生日志存储与查询用量。
+  "observability": { "enabled": false }
 }
 ```
 
-> **为什么不是 `web_xmore2025_astrofirefly-1008`？**
+> **为什么是连字符？**
 > Cloudflare 官方文档对 `name` 字段的规定是「字母数字和短横线，**不得使用下划线**」，
 > 带下划线时 `wrangler deploy` 会直接报校验错误，部署跑不起来。
-> 所以用连字符写法 `web-xmore2025-astrofirefly-1008`，与仓库名一一对应。
-> GitHub 仓库名和 Cloudflare 控制台显示的**项目名**不受此限制，仍可用下划线版本。
+> 所以 Worker 名用 `web-xmore2025-astrofirefly-1008`，仓库名也已改成同一写法，两边完全一致。
 
 构建配置：
 

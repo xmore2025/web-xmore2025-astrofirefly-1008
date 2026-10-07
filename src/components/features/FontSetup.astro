@@ -8,7 +8,7 @@
  *
  * 字体的 fallback 由各字体定义中的 fallbacks 字段控制（Astro Font API 处理），
  */
-import { Font } from "astro:assets";
+import { type CssVariable, Font } from "astro:assets";
 import { fontConfig } from "@/config";
 import { collectUsedFontCssVars } from "@/utils/fontHelper";
 
@@ -61,9 +61,12 @@ const codeFontFamily = codeFontVar
 ---
 
 <!-- Astro Font API: 自动下载、缓存并生成优化的 @font-face -->
+{/* CssVariable 由 Astro 按 astro.config.mjs 里实际配置的字体生成：
+    fontConfig.enable=false 时字体列表为空，该类型退化为 never，
+    直接传 string 会报 ts(2322)。这里统一走 unknown 断言，开启字体后同样适用。 */}
 {Array.from(allCssVars).map((cssVar) => (
   <Font
-    cssVariable={cssVar as any}
+    cssVariable={cssVar as unknown as CssVariable}
     preload={selectedFontVars.includes(cssVar)}
   />
 ))}

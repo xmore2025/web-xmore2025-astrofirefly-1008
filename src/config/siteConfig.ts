@@ -51,16 +51,10 @@ export const siteConfig: SiteConfig = {
 	site_url: "https://blog.example.com",
 
 	// 站点描述
-	description:
-		"一个记录技术、阅读与生活的个人博客。",
+	description: "一个记录技术、阅读与生活的个人博客。",
 
 	// 站点关键词
-	keywords: [
-		"博客",
-		"技术笔记",
-		"生活记录",
-		"Astro",
-	],
+	keywords: ["博客", "技术笔记", "生活记录", "Astro"],
 
 	// 主题色
 	themeColor: {
@@ -311,7 +305,7 @@ export const siteConfig: SiteConfig = {
 		// MyAnimeList 用户名（列表需为公开状态，私密列表无法读取）
 		username: "cuteleaf",
 		// MyAnimeList Client ID，在 https://myanimelist.net/apiconfig 注册免费应用后获取
-		clientId: "	0ef34371450f9c6c809deaadec6aa8f3",
+		clientId: "0ef34371450f9c6c809deaadec6aa8f3",
 		// MAL API 地址
 		apiUrl: "https://api.myanimelist.net/v2",
 		// 动画条目详情页地址，末尾需要带 /

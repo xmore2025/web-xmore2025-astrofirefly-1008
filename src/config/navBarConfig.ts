@@ -37,10 +37,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 关于
 	links.push(LinkPresets.About);
 
-	// GitHub（★建议改成你自己的主页）
 	links.push({
 		name: "GitHub",
-		url: "https://github.com/YOUR-GITHUB-ID",
+		url: "https://github.com/xmore2025",
 		external: true,
 		icon: "fa7-brands:github",
 	});

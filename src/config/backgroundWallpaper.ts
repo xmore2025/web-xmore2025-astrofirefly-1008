@@ -77,9 +77,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅主标题字体大小
 			titleSize: "4.5rem",
 			// 主页横幅副标题
-			subtitle: [
-				"写下来，才算发生过",
-			],
+			subtitle: ["写下来，才算发生过"],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
 			typewriter: {
@@ -102,14 +100,15 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				{
 					name: "GitHub",
 					icon: "fa7-brands:github",
-					url: "https://github.com/YOUR-GITHUB-ID",
+					url: "https://github.com/xmore2025",
 					showName: true,
 				},
-				{
-					name: "Email",
-					icon: "fa7-solid:envelope",
-					url: "mailto:YOUR@MAIL.COM",
-				},
+				// 邮箱：填上后取消注释即可在横幅显示邮件图标
+				// {
+				// 	name: "Email",
+				// 	icon: "fa7-solid:envelope",
+				// 	url: "mailto:你的邮箱@example.com",
+				// },
 				{
 					name: "RSS",
 					icon: "fa7-solid:rss",
