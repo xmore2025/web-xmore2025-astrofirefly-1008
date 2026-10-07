@@ -1,6 +1,6 @@
 import type { SiteConfig } from "@/types/siteConfig";
 import { resolvePageToggles } from "../utils/page-toggle-utils";
-import { resolveSiteLang } from "../utils/site-config-utils";
+import { resolveSiteLang, resolveSiteUrl } from "../utils/site-config-utils";
 
 // 定义站点语言
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru', 'ko'。
@@ -48,7 +48,8 @@ export const siteConfig: SiteConfig = {
 	subtitle: "写下来，才算发生过",
 
 	// 站点 URL（★必改：换成你的最终域名，影响 sitemap / RSS / OG）
-	site_url: "https://blog.example.com",
+	// 也可以用部署平台环境变量 PUBLIC_SITE_URL 覆盖，无需改动这里
+	site_url: resolveSiteUrl("https://web-admin.xmorexz.dpdns.org"),
 
 	// 站点描述
 	description: "一个记录技术、阅读与生活的个人博客。",
@@ -59,7 +60,10 @@ export const siteConfig: SiteConfig = {
 	// 主题色
 	themeColor: {
 		// 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		hue: 165,
+		// 全站固定单一强调色：墨蓝 #1b3a4b（hue ≈ 201）。
+		// 视觉统一的第一条硬规则是「只用一个强调色」，不要再让用户自己调色相，
+		// 所以 displaySettingsConfig 里的主题色选择器保持默认关闭
+		hue: 201,
 		// 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 		defaultMode: "system",
 	},

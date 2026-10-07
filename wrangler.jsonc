@@ -5,7 +5,10 @@
 	"compatibility_date": "2026-10-07",
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
-		"directory": "./dist"
+		"directory": "./dist",
+		// Workers 静态资源默认返回平台自带的 404，站点自己的 dist/404.html 不会生效；
+		// 显式指定后才会用我们构建的 404 页面兜底
+		"not_found_handling": "404-page"
 	},
 	// Workers Logs 采集。新建 Worker 默认为 true；纯静态站用不到日志与追踪，
 	// 关掉可避免产生日志存储与查询用量。

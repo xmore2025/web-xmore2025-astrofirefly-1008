@@ -4,39 +4,35 @@
 
 ---
 
-## 一、必改项（占位符）
+## 一、站点身份（已填好 ✅）
 
-以下内容目前是我填的占位值，请搜索替换成你自己的：
+| 项 | 值 | 位置 |
+|---|---|---|
+| 域名 | `https://web-admin.xmorexz.dpdns.org` | `src/config/siteConfig.ts` → `site_url`（也可用环境变量 `PUBLIC_SITE_URL` 覆盖） |
+| 邮箱 | `xmore2025@proton.me` | `profileConfig.ts` / `backgroundWallpaper.ts`（个人卡片与横幅图标）、`friends.mdx`（友链页） |
+| GitHub | `https://github.com/xmore2025` | 导航栏 / 个人卡片 / 横幅 |
+| 主题色 | 墨蓝 `#1b3a4b`（hue 201） | `siteConfig.ts` → `themeColor.hue`；设置面板默认关闭，全站单一强调色 |
 
-| 文件 | 位置 | 当前值 | 说明 |
-|---|---|---|---|
-| `src/config/siteConfig.ts` | `site_url` | `https://blog.example.com` | **最重要**。决定 sitemap / RSS / OG 链接，必须是最终真实域名 |
-| `src/config/siteConfig.ts` | `title` / `subtitle` / `description` / `keywords` | Xmore's Blog 等 | 站点名称与描述 |
-| `src/config/profileConfig.ts` | `name` / `bio` / `links` | Xmore / GitHub / 邮箱 | 侧边栏个人卡片 |
-| `src/config/backgroundWallpaper.ts` | `homeText.title` / `subtitle` / `links` | 同上 | 首页横幅文案与图标链接 |
-| `src/config/siteConfig.ts` | `siteStartDate` | `2026-01-01` | 站点起始日期 |
-| `src/config/profileConfig.ts` / `backgroundWallpaper.ts` | 邮箱链接 | 已注释掉 | 有邮箱后取消注释，填 `mailto:你的邮箱` |
-| `src/content/spec/friends.mdx` | `site.email` | `YOUR@MAIL.COM` | 友链页展示的联系邮箱 |
-
-GitHub 相关链接已全部填成 `https://github.com/xmore2025`，不用再改。
-
-全局替换占位符即可：
+**主题素材**（头像 + 桌面/移动横幅）由 `scripts/generate-theme-assets.mjs` 用 SVG + sharp 生成，
+与主题色严格一致且每张不到 10 KB。想换色只改脚本顶部的 `PALETTE`，再跑：
 
 ```bash
-grep -rn "YOUR-GITHUB-ID\|YOUR@MAIL.COM\|blog.example.com" src/
+node scripts/generate-theme-assets.mjs
 ```
 
-**图片替换**：`src/assets/images/avatar.avif`（头像）、`src/assets/images/logo/`（导航栏 logo）、`public/favicon/`（站点图标）。
+导航栏 logo 在 `src/assets/images/logo/`，站点图标在 `public/favicon/`，目前沿用 Firefly 萤火虫图标。
 
 ---
 
 ## 二、本地开发
 
-依赖已安装完成。**本机为 Windows + 沙箱环境**，pnpm 默认的符号链接布局会失败，因此 `.npmrc` 里已固定 `node-linker=hoisted`。
+依赖已安装完成。**本机为 Windows + exFAT 卷**，pnpm 默认的符号链接布局会失败，因此 `.npmrc` 里已固定 `node-linker=hoisted`；
+`pnpm-workspace.yaml` 里另加了 `verifyDepsBeforeRun: false`，避免 pnpm 11 每次跑脚本前都尝试重装依赖（它会撞上同样的符号链接错误）。
 
 ```bash
 pnpm dev              # 本地预览 http://localhost:4321
-npx astro build       # 构建（不要走 pnpm build，它会触发依赖重装）
+pnpm build            # 完整构建（含 Pagefind 索引），已可正常跑通
+npx astro build       # 只跑 Astro 构建、跳过前后置脚本，改样式时更快
 ```
 
 > 若某天需要重装依赖，用这条命令（跳过 esbuild 的安装脚本，它在沙箱里会报 EBUSY）：
@@ -62,8 +58,9 @@ published: 2026-10-07
 相比 Firefly 默认配置，以下功能已关闭（想恢复改回 `true` 即可）：
 
 - **页面**：留言板、动态、项目、相册、书签导航、打赏、B站追番、番组计划、VNDB、MyAnimeList
-- **侧边栏**：公告、音乐播放器、最新动态、站点统计、站点信息、日历 —— 只保留「个人资料 + 分类 + 标签」，文章页右侧保留目录
-- **特效**：背景视频、水波纹动画（樱花特效本就默认关闭）
+- **侧边栏**：单侧栏（左侧），只保留「个人资料 + 分类」，标签走导航栏「文章 → 标签」入口；文章页目录由悬浮目录（FloatingTOC）提供，不依赖侧栏
+- **特效**：背景视频（含第三方外链视频已移除）、水波纹动画（樱花特效本就默认关闭）
+- **图表**：PlantUML（依赖外部渲染服务，与纯静态目标冲突）—— 只保留 Mermaid（构建期本地渲染）
 - **其他**：OG 图自动生成（构建极慢）、随机文章推荐、Atom 订阅入口
 - **字体**：关闭自定义字体下载，全程使用系统字体栈（首屏最快，也避免构建期联网拉字体）
 - 导航精简为 **首页 / 文章（归档·分类·标签）/ 友链 / 关于 / GitHub** 五项
@@ -140,7 +137,11 @@ Pages 没在仓库设置里开启，自动跑只会每次推送都报红。
   "name": "web-xmore2025-astrofirefly-1008",
   "compatibility_date": "2026-10-07",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "./dist" },
+  "assets": {
+    "directory": "./dist",
+    // 不加这一项，Workers 会返回平台自带的 404，站点自己的 dist/404.html 不生效
+    "not_found_handling": "404-page"
+  },
   // Workers Logs 采集。新建 Worker 默认为 true；纯静态站用不到日志与追踪，
   // 关掉可避免产生日志存储与查询用量。
   "observability": { "enabled": false }
@@ -158,7 +159,7 @@ Pages 没在仓库设置里开启，自动跑只会每次推送都报红。
 |---|---|
 | 构建命令 | `pnpm build` |
 | 部署命令 | `npx wrangler deploy` |
-| 环境变量 | `NODE_VERSION = 22.23`、`PNPM_VERSION = 11.22.0` |
+| 环境变量 | `NODE_VERSION = 22.23`、`PNPM_VERSION = 11.22.0`、`PUBLIC_SITE_URL = https://你的域名` |
 
 > `package.json` 里 `engines.node >= 22.23.0`，只写 `NODE_VERSION = 22` 时云端可能装到更旧的 22.x 而构建失败，
 > 建议直接写 `22.23`。`.nvmrc` 也已同步为 `22.23.0`。
@@ -171,7 +172,7 @@ Pages 没在仓库设置里开启，自动跑只会每次推送都报红。
 | Framework preset | `Astro` |
 | 构建命令 | `pnpm build` |
 | 构建输出目录 | `dist` |
-| 环境变量 | `NODE_VERSION = 22.23`、`PNPM_VERSION = 11.22.0` |
+| 环境变量 | `NODE_VERSION = 22.23`、`PNPM_VERSION = 11.22.0`、`PUBLIC_SITE_URL = https://你的域名` |
 
 > Pages 模式**不要**设置 `CF_WORKERS` 环境变量 —— 那是 Firefly 启用 SSR 适配器的开关，静态部署设了反而走错路径。
 
@@ -184,26 +185,29 @@ Custom domains 里添加你的域名，SSL 自动签发。注意两点：
 
 ---
 
-## 五、启用评论（Giscus）
+## 五、启用评论（Giscus）—— 只差一步
 
-目前 `commentConfig.type` 是 `"none"`（默认关闭）。启用步骤：
+选型结论：Giscus 把评论存在 GitHub Discussions 里，**零后端、零数据库、零费用、可导出**；
+Waline 要开 D1 + Worker，会把纯静态降级成有状态，不采用。
 
-1. 在 GitHub 仓库 **Settings → Features** 开启 Discussions
-2. 打开 <https://giscus.app>，填入仓库名，选择 `Announcements` 分类，复制生成的 `repoId` 和 `categoryId`
-3. 编辑 `src/config/commentConfig.ts`：
+已完成：
+- 仓库已开启 Discussions，并建好 `Announcements` 分类
+- `src/config/commentConfig.ts` 里 `repo` / `repoId`（`R_kgDOU_ny8Q`）/ `category` 已填好
 
-```ts
-type: "giscus",
-giscus: {
-  repo: "<你的账号>/<仓库名>",
-  repoId: "R_kgDO...",
-  category: "Announcements",
-  categoryId: "DIC_kwDO...",
-  ...
-}
-```
+**只剩一步**：拿到 `categoryId`，填进 `commentConfig.ts` 的 `giscus.categoryId`，
+再把 `type: "none"` 改成 `type: "giscus"`：
 
-Giscus 把评论存在 GitHub Discussions 里，**零后端、零费用、可导出**，是纯静态博客最省心的选择。
+1. 打开 <https://giscus.app>，填入 `xmore2025/web-xmore2025-astrofirefly-1008`，
+   分类选 `Announcements`，页面会生成一段配置代码，复制其中的 `data-category-id`（`DIC_kwDO...`）
+2. 填入后推送，评论区即可用
+
+> 没填 `categoryId` 前保持 `type: "none"`，否则评论区会加载失败。
+
+## 五·二、开启统计（Cloudflare Web Analytics）
+
+免费、免 cookie、脚本 < 10 KB。步骤见 `src/config/FooterConfig.html` 内的注释：
+在 Cloudflare 控制台「分析和日志 → Web Analytics」添加站点，
+把生成的 beacon 代码取消注释、填入 token 即可。不要用 Google Analytics。
 
 ---
 

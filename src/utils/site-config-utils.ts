@@ -47,6 +47,31 @@ export function resolveSiteLang(
 	return normalizeSiteLang(readSiteLangEnv()) ?? defaultLang;
 }
 
+// 读取站点地址环境变量（Vite/Astro 走 import.meta.env，构建脚本回退 process.env）
+function readSiteUrlEnv(): string | undefined {
+	try {
+		const raw = (import.meta.env as Record<string, unknown>).PUBLIC_SITE_URL;
+		return typeof raw === "string" && raw.trim() ? raw.trim() : undefined;
+	} catch {
+		return typeof process === "undefined"
+			? undefined
+			: process.env.PUBLIC_SITE_URL;
+	}
+}
+
+// 站点地址，环境变量 PUBLIC_SITE_URL 优先，未设置时使用配置文件里的默认值
+// 例如在部署平台设置 PUBLIC_SITE_URL=https://你的域名 即可换域名构建，无需改代码
+export function resolveSiteUrl(defaultUrl: string): string {
+	const url = readSiteUrlEnv() ?? defaultUrl;
+	if (url.includes("example.com")) {
+		console.warn(
+			`[SITE-URL] 站点地址仍是占位值 ${url}，sitemap / RSS / canonical 会指向错误域名。` +
+				"请在 src/config/siteConfig.ts 修改 site_url，或在部署平台配置 PUBLIC_SITE_URL。",
+		);
+	}
+	return url.replace(/\/+$/, "");
+}
+
 // 由语言代码生成 OpenGraph og:locale（language_TERRITORY 格式）。
 // 站点语言已是下划线形式（zh_CN/zh_TW/en/ja/ko/ru），仅需为无地区的语言补全区号。
 export function getOgLocale(lang: string): string {
