@@ -71,52 +71,46 @@ published: 2026-10-07
 
 ## 四、部署到 Cloudflare
 
-### 1. 初始化 Git 仓库
+### 1. Git 仓库（已完成 ✅）
 
-**目标仓库**：<https://github.com/xmore2025/web_xmore2025_astrofirefly-1008>（公开）
+**仓库**：<https://github.com/xmore2025/web_xmore2025_astrofirefly-1008>（公开）
 
-⚠️ 目录里有一个**残留的损坏 `.git` 目录**（首次克隆失败遗留，隐藏属性 + exFAT 目录项损坏，任何自动删除方式都会被拒绝）。必须先手动清除：
+| 项 | 值 |
+|---|---|
+| 远端 | `https://xmore2025@github.com/xmore2025/web_xmore2025_astrofirefly-1008.git` |
+| 分支 | `main` |
+| 首次提交 | `54d5932` init: 简约版 Firefly 博客 (Astro + Cloudflare) |
+| 提交身份 | `xmore2025 <336082097+xmore2025@users.noreply.github.com>` |
 
-```powershell
-# PowerShell（管理员），注意要在项目目录里执行
-cd "E:\New-website-personal\newweb_xmore2025_personal_zlh\Boke-wz-note\web_xmore2025_astrofirefly"
-Remove-Item -LiteralPath .git -Recurse -Force
-```
-
-若提示「拒绝访问」，说明 exFAT 卷上该目录项已损坏，需要先修复磁盘再删：
-
-```powershell
-chkdsk E: /f      # 会提示卷正在使用，输入 Y 安排下次重启时检查，重启后再删除
-```
-
-删掉后，直接运行仓库里已准备好的脚本：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File setup-repo.ps1
-```
-
-脚本会依次完成 `git init` → 分支改 `main` → 写入提交身份 → 关联远端 → 首次提交。最后手动推送：
+日常提交：
 
 ```bash
-git push -u origin main     # 首次会弹浏览器，用 xmore2025 账号授权
-```
-
-等价的手动命令：
-
-```bash
-git init
-git branch -M main
-git remote add origin https://github.com/xmore2025/web_xmore2025_astrofirefly-1008.git
 git add -A
-git commit -m "init: 简约版 Firefly 博客 (Astro + Cloudflare)"
-git push -u origin main
+git commit -m "说明"
+git push
 ```
 
-> **本机 git 代理已修正**：全局原本把 GitHub 指向 `socks5://127.0.0.1:10808`，但该端口没有进程监听，导致所有 GitHub 操作超时。
-> 现已改为 `http://127.0.0.1:7897`（Clash Verge）。如果你的代理端口变了，改回去：
-> ```bash
-> git config --global http.https://github.com/.proxy socks5://127.0.0.1:10808
-> ```
+仓库根目录下的 `setup-repo.ps1` 保留着初始化流程，换机器重新搭环境时可直接跑。
+
+> **踩过的两个坑（已修）**
+>
+> 1. **本机 git 代理指向了没监听的端口**：全局原本是 `socks5://127.0.0.1:10808`，该端口没有进程，导致所有 GitHub 操作超时（这也是最初 clone 失败的原因）。
+>    现已改为 `http://127.0.0.1:7897`（Clash Verge）。代理端口变了就改这一项：
+>    ```bash
+>    git config --global http.https://github.com/.proxy http://127.0.0.1:7897
+>    ```
+>
+> 2. **凭据管理器里存的是另一个账号**：首次 push 返回 `Permission denied to xmind-2046`。
+>    解决方式是远端 URL 带用户名 + 重新授权：
+>    ```bash
+>    git remote set-url origin https://xmore2025@github.com/xmore2025/web_xmore2025_astrofirefly-1008.git
+>    git credential-manager github login
+>    git push -u origin main
+>    ```
+>
+> 3. **残留的损坏 `.git`**：首次克隆失败在 exFAT 卷上留下一个带隐藏属性、无法读取的目录项，
+>    会让该目录下所有 git 命令报 `error reading .git`。已清除。若以后再遇到，用
+>    `rm -rf .git` 配合 `CODEBUDDY_SAFE_DELETE_ENABLED=0`，或 `chkdsk E: /f` 修复卷后再删。
 
 ### 2. Cloudflare 控制台
 
@@ -149,7 +143,11 @@ git push -u origin main
 |---|---|
 | 构建命令 | `pnpm build` |
 | 部署命令 | `npx wrangler deploy` |
-| 环境变量 | `NODE_VERSION = 22` |
+| 环境变量 | `NODE_VERSION = 22.23`、`PNPM_VERSION = 11.22.0` |
+
+> `package.json` 里 `engines.node >= 22.23.0`，只写 `NODE_VERSION = 22` 时云端可能装到更旧的 22.x 而构建失败，
+> 建议直接写 `22.23`。`.nvmrc` 也已同步为 `22.23.0`。
+> 另外 `preinstall` 是 `npx only-allow pnpm`，用 npm/yarn 装会直接失败，必须走 pnpm。
 
 **方案 B：Pages**（零配置，更省心）
 
@@ -158,7 +156,7 @@ git push -u origin main
 | Framework preset | `Astro` |
 | 构建命令 | `pnpm build` |
 | 构建输出目录 | `dist` |
-| 环境变量 | `NODE_VERSION = 22` |
+| 环境变量 | `NODE_VERSION = 22.23`、`PNPM_VERSION = 11.22.0` |
 
 > Pages 模式**不要**设置 `CF_WORKERS` 环境变量 —— 那是 Firefly 启用 SSR 适配器的开关，静态部署设了反而走错路径。
 
