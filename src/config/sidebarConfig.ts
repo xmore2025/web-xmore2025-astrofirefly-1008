@@ -11,7 +11,11 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	// left: 仅显示左侧边栏
 	// right: 仅显示右侧边栏
 	// both: 双侧边栏，1280px以上同时显示左右，769-1279px根据tabletSidebar配置显示其中一侧
-	position: "both",
+	//
+	// 单侧栏：双侧栏在宽屏下会把正文挤到中间，反而显得拥挤。
+	// 只保留「个人资料卡 + 分类」两个组件，标签走导航栏的「文章 → 标签」入口；
+	// 文章页目录由 FloatingTOC 提供，不依赖右侧栏
+	position: "left",
 
 	// 平板端(769-1279px)显示哪侧侧边栏，仅position为both时生效
 	// left: 平板端显示左侧边栏
@@ -81,9 +85,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 		{
 			// 组件类型：标签组件
+			// 分类与标签二选一，侧栏只留分类；标签页仍在导航栏「文章 → 标签」
 			type: "tags",
 			// 是否启用该组件
-			enable: true,
+			enable: false,
 			// 组件位置
 			position: "sticky",
 			// 是否在文章详情页显示
@@ -97,6 +102,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	],
 
 	// 右侧边栏组件配置列表
+	// position 为 left 时右侧栏整体不渲染，这里的配置仅作为日后切回双侧栏的备份
 	rightComponents: [
 		{
 			// 组件类型：最新动态组件
@@ -265,9 +271,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 		{
 			// 组件类型：标签组件
+			// 同上：移动端底部也只保留分类，避免两个列表堆在一起
 			type: "tags",
 			// 是否启用该组件
-			enable: true,
+			enable: false,
 			// 是否在文章详情页显示
 			showOnPostPage: true,
 			// 组件专属配置

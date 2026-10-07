@@ -27,13 +27,12 @@ export const profileConfig: ProfileConfig = {
 			url: "https://github.com/xmore2025",
 			showName: false,
 		},
-		// 邮箱：填上后取消注释即可在个人卡片显示邮件图标
-		// {
-		// 	name: "Email",
-		// 	icon: "fa7-solid:envelope",
-		// 	url: "mailto:你的邮箱@example.com",
-		// 	showName: false,
-		// },
+		{
+			name: "Email",
+			icon: "fa7-solid:envelope",
+			url: "mailto:xmore2025@proton.me",
+			showName: false,
+		},
 		{
 			name: "RSS",
 			icon: "fa7-solid:rss",
