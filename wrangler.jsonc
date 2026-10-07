@@ -6,5 +6,10 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"assets": {
 		"directory": "./dist"
+	},
+	// Workers Logs 采集。新建 Worker 默认为 true；纯静态站用不到日志与追踪，
+	// 关掉可避免产生日志存储与查询用量。
+	"observability": {
+		"enabled": false
 	}
 }
