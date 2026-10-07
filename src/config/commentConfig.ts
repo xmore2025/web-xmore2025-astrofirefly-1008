@@ -2,7 +2,15 @@ import type { CommentConfig } from "../types/commentConfig";
 
 export const commentConfig: CommentConfig = {
 	// 评论系统类型: none, twikoo, waline, giscus, disqus, artalk，默认为none，即不启用评论系统
-	type: "none",
+	//
+	// 选型说明：Giscus 把评论存在 GitHub Discussions 里，零后端、零数据库、零费用，
+	// 站点因此仍然是「一个 Git 仓库 + 一份静态产物」。Waline 要额外开 D1 + Worker，
+	// 会把纯静态降级为有状态；Twikoo / Artalk 要引入 Cloudflare 之外的平台，都不采用。
+	//
+	// 已启用 Giscus：仓库 xmore2025/web-xmore2025-astrofirefly-1008 的
+	// Announcements 分类（repoId / categoryId 均取自 https://giscus.app）。
+	// 换仓库或换分类时，重新到 giscus.app 生成，改下面 giscus 段的四个字段即可。
+	type: "giscus",
 
 	//twikoo评论系统配置
 	twikoo: {
@@ -54,23 +62,24 @@ export const commentConfig: CommentConfig = {
 	//giscus评论系统配置
 	giscus: {
 		// 设置 Giscus 评论系统仓库
-		repo: "CuteLeaf/Firefly",
+		repo: "xmore2025/web-xmore2025-astrofirefly-1008",
 		// 设置 Giscus 评论系统仓库ID
-		repoId: "R_kgD2gfdFGd",
+		repoId: "R_kgDOU_ny8Q",
 		// 设置 Giscus 评论系统分类
-		category: "General",
+		category: "Announcements",
 		// 获取 Giscus 评论系统分类ID
-		categoryId: "DIC_kwDOKy9HOc4CegmW",
+		categoryId: "DIC_kwDOU_ny8c4DHQ2j",
 		// 获取 Giscus 评论系统映射方式
-		mapping: "title",
+		// pathname：按文章 URL 建讨论，改标题也不会丢评论（比 title 稳）
+		mapping: "pathname",
 		// 获取 Giscus 评论系统严格模式
 		strict: "0",
 		// 获取 Giscus 评论系统反应功能
 		reactionsEnabled: "1",
 		// 获取 Giscus 评论系统元数据功能
-		emitMetadata: "1",
+		emitMetadata: "0",
 		// 获取 Giscus 评论系统输入位置
-		inputPosition: "top",
+		inputPosition: "bottom",
 		// 获取 Giscus 评论系统语言
 		lang: "zh-CN",
 		// 获取 Giscus 评论系统加载方式
