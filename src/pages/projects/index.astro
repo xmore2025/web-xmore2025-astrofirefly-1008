@@ -1,18 +1,18 @@
 ---
 import { Icon } from "astro-icon/components";
-import ProjectCard from "@/components/pages/projects/ProjectCard.astro";
 import { siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
-import "@/styles/pages/common.css";
 import { getSortedProjects } from "@/utils/content-utils";
+import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import {
 	getProjectStatusMeta,
 	PROJECT_STATUS_KEYS,
+	resolveProjectImage,
 } from "@/utils/projects-utils";
-import { getFileDirFromPath, removeFileExtension } from "@/utils/url-utils";
-import "@/styles/pages/card-grid.css";
+import { removeFileExtension, url } from "@/utils/url-utils";
+import "@/styles/pages/sw-projects.css";
 
 // 检查页面是否启用
 if (!siteConfig.pages.projects) {
@@ -23,19 +23,21 @@ const title = i18n(I18nKey.projects);
 const description = i18n(I18nKey.projectsDescription);
 
 const projects = await getSortedProjects();
-const projectMeta = projects.map((p) => ({
-	id: removeFileExtension(p.id),
-	title: p.data.title,
-	description: p.data.description,
-	image: p.data.image,
-	basePath: getFileDirFromPath(p.filePath || ""),
-	tags: p.data.tags,
-	published: p.data.published,
-	link: p.data.link,
-	status: p.data.status,
-}));
+const cards = await Promise.all(
+	projects.map(async (p) => ({
+		slug: removeFileExtension(p.id),
+		title: p.data.title,
+		description: p.data.description,
+		image: await resolveProjectImage(p.data.image, p.filePath),
+		tags: p.data.tags,
+		published: p.data.published,
+		status: p.data.status,
+		statusLabel: getProjectStatusMeta(p.data.status).label,
+		links: p.data.link,
+	})),
+);
 
-// 筛选：显示全部已知状态（带图标）
+// 状态筛选按钮
 const statusFilters = PROJECT_STATUS_KEYS.map((key) => {
 	const meta = getProjectStatusMeta(key);
 	return { key, label: meta.label, icon: meta.icon };
@@ -43,88 +45,95 @@ const statusFilters = PROJECT_STATUS_KEYS.map((key) => {
 ---
 
 <MainGridLayout title={title} description={description}>
-	<section class="page-shell">
-		<!-- 标题面板 -->
-		<header class="card-base page-header">
-			<div class="page-heading">
-				<div class="page-icon" aria-hidden="true">
-					<Icon name="material-symbols:rocket-launch" />
-				</div>
-				<div>
-					<h2>{title}</h2>
-					{description && <p>{description}</p>}
-				</div>
+	<div class="sw-projects">
+		<header class="sw-header">
+			<div>
+				<h1>{title}</h1>
+				{description && <p>{description}</p>}
 			</div>
-			<div class="page-count" aria-label={title}>
-				<Icon name="material-symbols:rocket-launch" />
-				<strong>{projectMeta.length}</strong>
-				<span>{title}</span>
+			<div class="sw-count">
+				<strong>{cards.length}</strong> 个项目
 			</div>
-		<!-- 搜索 + 状态筛选（标题面板内，整行；搜索与筛选分两行） -->
-		<project-filter style="grid-column: 1 / -1">
-			<div class="relative mb-3">
-				<Icon
-					name="material-symbols:search"
-					class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500 text-lg pointer-events-none"
-				/>
-				<input
-					type="text"
-					data-search
-					placeholder={i18n(I18nKey.projectSearch)}
-					class="w-full pl-10 pr-4 py-2 rounded-xl border border-(--line-divider) bg-transparent text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500 focus:border-(--primary) focus:ring-1 focus:ring-(--primary) outline-none transition-all duration-200 text-sm"
-				/>
-			</div>
-			<div class="flex flex-wrap items-center gap-2">
-				<button
-					data-status="all"
-					class="category-pill px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200"
-					data-active
-				>
-					{i18n(I18nKey.all)}
-				</button>
-				{statusFilters.map((s) => (
-					<button
-						data-status={s.key}
-						class="category-pill px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 inline-flex items-center gap-1.5"
-					>
+		</header>
+
+		<project-filter class="sw-toolbar">
+			<input
+				type="text"
+				data-search
+				placeholder={i18n(I18nKey.projectSearch)}
+				aria-label={i18n(I18nKey.projectSearch)}
+				class="sw-search"
+			/>
+			<button data-status="all" class="sw-pill" data-active>
+				{i18n(I18nKey.all)}
+			</button>
+			{
+				statusFilters.map((s) => (
+					<button data-status={s.key} class="sw-pill">
 						{s.icon && <Icon name={s.icon} class="text-base" />}
 						{s.label}
 					</button>
-				))}
-			</div>
+				))
+			}
 		</project-filter>
-		</header>
 
-		<!-- 内容面板：项目卡片网格 -->
-		{projectMeta.length > 0 ? (
-			<div class="card-grid" style="--card-grid-min-width: 320px">
-				{projectMeta.map((p) => (
-					<ProjectCard
-						id={p.id}
-						title={p.title}
-						description={p.description}
-						image={p.image}
-						basePath={p.basePath}
-						tags={p.tags}
-						published={p.published}
-						link={p.link}
-						status={p.status}
-					/>
-				))}
-			</div>
-		) : (
-			<div class="card-base flex flex-col items-center justify-center py-16 text-neutral-400 dark:text-neutral-500">
-				<Icon name="material-symbols:rocket-launch" class="text-6xl mb-4 opacity-50" />
-				<p class="text-lg">{i18n(I18nKey.projectEmpty)}</p>
-			</div>
-		)}
+		{
+			cards.length > 0 ? (
+				<div class="sw-grid">
+					{cards.map((p) => (
+						<article
+							class="sw-card project-card"
+							data-status={p.status}
+							data-tags={p.tags.join(",")}
+						>
+							<div class="sw-cover">
+								{p.image ? (
+									<img src={p.image} alt={p.title} loading="lazy" decoding="async" />
+								) : (
+									<span aria-hidden="true">{p.title.charAt(0)}</span>
+								)}
+							</div>
+							<h3 class="sw-title">{p.title}</h3>
+							{p.description && <p class="sw-desc">{p.description}</p>}
+							<div class="sw-meta">
+								<time datetime={p.published.toISOString()}>
+									{formatDateToYYYYMMDD(p.published)}
+								</time>
+								{p.statusLabel && <span class="sw-status">{p.statusLabel}</span>}
+							</div>
+							{p.tags.length > 0 && (
+								<div class="sw-tags">
+									{p.tags.map((t) => (
+										<span class="sw-tag">{t}</span>
+									))}
+								</div>
+							)}
+							{p.links.length > 0 && (
+								<div class="sw-links">
+									{p.links.map((l) => (
+										<a href={l.value} target="_blank" rel="noopener noreferrer">
+											{l.label}
+										</a>
+									))}
+								</div>
+							)}
+							<a class="sw-stretched" href={url(`/projects/${p.slug}/`)} aria-label={p.title} />
+						</article>
+					))}
+				</div>
+			) : (
+				<div class="sw-empty">
+					<Icon name="material-symbols:rocket-launch" class="text-5xl" />
+					<p>{i18n(I18nKey.projectEmpty)}</p>
+				</div>
+			)
+		}
 
-		<!-- 筛选无结果空态 -->
-		<div class="projects-empty hidden flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500">
-			<Icon name="material-symbols:search-off-rounded" class="text-4xl mb-3" />
-			<div class="text-sm">{i18n(I18nKey.searchNoResults)}</div>
+		<div class="sw-empty projects-empty hidden">
+			<Icon name="material-symbols:search-off-rounded" class="text-4xl" />
+			<div>{i18n(I18nKey.searchNoResults)}</div>
 		</div>
-	</section>
+	</div>
 
 	<script slot="head" is:inline>
 		if (!customElements.get("project-filter")) {
@@ -152,44 +161,34 @@ const statusFilters = PROJECT_STATUS_KEYS.map((key) => {
 					this.applyFilters();
 				}
 				applyFilters() {
-					const container = this.closest(".page-shell");
+					const container = this.closest(".sw-projects");
 					if (!container) return;
-					const input = this.querySelector("[data-search]");
-					const query = (input?.value || "").toLowerCase().trim();
+					const query = (this.querySelector("[data-search]")?.value || "")
+						.toLowerCase()
+						.trim();
 					const cards = container.querySelectorAll(".project-card");
 					let hasVisible = false;
 					cards.forEach((card) => {
 						const statusMatch =
 							this.selectedStatus === "all" ||
 							card.dataset.status === this.selectedStatus;
-						const tags = (card.dataset.tags || "").toLowerCase();
-						const title = (
-							card.querySelector(".post-card-title")?.textContent || ""
+						const haystack = (
+							(card.querySelector(".sw-title")?.textContent || "") +
+							" " +
+							(card.querySelector(".sw-desc")?.textContent || "") +
+							" " +
+							(card.dataset.tags || "")
 						).toLowerCase();
-						const desc = (
-							card.querySelector(".description")?.textContent || ""
-						).toLowerCase();
-						const searchMatch =
-							!query ||
-							title.includes(query) ||
-							desc.includes(query) ||
-							tags.includes(query);
-						if (statusMatch && searchMatch) {
-							card.style.display = "";
-							hasVisible = true;
-						} else {
-							card.style.display = "none";
-						}
+						const searchMatch = !query || haystack.includes(query);
+						const visible = statusMatch && searchMatch;
+						card.style.display = visible ? "" : "none";
+						if (visible) hasVisible = true;
 					});
 					const empty = container.querySelector(".projects-empty");
-					if (empty) {
-						empty.classList.toggle("hidden", hasVisible);
-						empty.classList.toggle("flex", !hasVisible);
-					}
+					if (empty) empty.classList.toggle("hidden", hasVisible);
 				}
 			}
 			customElements.define("project-filter", ProjectFilter);
 		}
 	</script>
-
 </MainGridLayout>

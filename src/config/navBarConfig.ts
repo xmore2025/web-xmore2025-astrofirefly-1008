@@ -31,6 +31,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
+	// 项目
+	links.push(LinkPresets.Projects);
+
 	// 友链
 	links.push(LinkPresets.Friends);
 

@@ -19,8 +19,8 @@ const pages = resolvePageToggles({
 
 	// 动态页面开关
 	dynamic: false,
-	// 项目展示页开关
-	projects: false,
+	// 项目展示页开关（/projects/，配色与卡片布局参考 Starwind 风格）
+	projects: true,
 	// 相册页面开关
 	gallery: false,
 	// 书签导航页面开关
@@ -60,10 +60,11 @@ export const siteConfig: SiteConfig = {
 	// 主题色
 	themeColor: {
 		// 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		// 全站固定单一强调色：墨蓝 #1b3a4b（hue ≈ 201）。
+		// 全站固定单一强调色：参考站的蓝（blue-700 #1d4ed8，hue ≈ 264）。
 		// 视觉统一的第一条硬规则是「只用一个强调色」，不要再让用户自己调色相，
-		// 所以 displaySettingsConfig 里的主题色选择器保持默认关闭
-		hue: 201,
+		// 所以 displaySettingsConfig 里的主题色选择器保持默认关闭。
+		// 想换回墨蓝改 201 即可（只改这一处，全站联动）。
+		hue: 264,
 		// 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 		defaultMode: "system",
 	},

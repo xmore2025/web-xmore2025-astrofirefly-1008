@@ -1,0 +1,278 @@
+/* ==========================================================================
+   项目展示页配色与卡片布局
+   配色参考 https://free-astro-template.netlify.app/blog/（Starwind UI 体系）：
+   中性灰底 + blue-700 主色 + fuchsia 辅色，卡片为「无边框感 + 两层阴影」。
+   变量只挂在 .sw-projects 上，不污染全站其它页面。
+   ========================================================================== */
+
+.sw-projects {
+	--sw-bg: #fafafa;
+	--sw-surface: #ffffff;
+	--sw-surface-soft: #f4f4f5;
+	--sw-fg: #0a0a0a;
+	--sw-muted: #525252;
+	--sw-border: #e5e5e5;
+	--sw-primary: #1d4ed8; /* blue-700 */
+	--sw-primary-soft: rgb(29 78 216 / 0.1);
+	--sw-primary-ring: rgb(29 78 216 / 0.35);
+	--sw-secondary: #a21caf; /* fuchsia-700 */
+	--sw-radius: 1rem;
+	--sw-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -12px rgb(0 0 0 / 0.18);
+	--sw-shadow-hover: 0 2px 4px rgb(0 0 0 / 0.08),
+		0 16px 32px -16px rgb(29 78 216 / 0.35);
+
+	color: var(--sw-fg);
+}
+
+.dark .sw-projects {
+	--sw-bg: #0a0a0a;
+	--sw-surface: #171717;
+	--sw-surface-soft: #1f1f1f;
+	--sw-fg: #fafafa;
+	--sw-muted: #a3a3a3;
+	--sw-border: rgb(255 255 255 / 0.1);
+	--sw-primary: #60a5fa; /* 暗底上用 blue-400 保证对比度 */
+	--sw-primary-soft: rgb(96 165 250 / 0.16);
+	--sw-primary-ring: rgb(96 165 250 / 0.4);
+	--sw-secondary: #e879f9;
+	--sw-shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px -12px rgb(0 0 0 / 0.8);
+	--sw-shadow-hover: 0 2px 4px rgb(0 0 0 / 0.5),
+		0 16px 32px -16px rgb(96 165 250 / 0.35);
+}
+
+/* ── 页头 ───────────────────────────────────────── */
+.sw-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.sw-header h1 {
+	margin: 0;
+	font-size: 1.75rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.sw-header p {
+	margin: 0.25rem 0 0;
+	font-size: 0.9375rem;
+	color: var(--sw-muted);
+}
+
+.sw-count {
+	font-size: 0.8125rem;
+	color: var(--sw-muted);
+}
+
+.sw-count strong {
+	color: var(--sw-primary);
+	font-size: 1.125rem;
+}
+
+/* ── 搜索与筛选 ─────────────────────────────────── */
+.sw-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem;
+	margin-bottom: 1.5rem;
+}
+
+.sw-search {
+	flex: 1 1 240px;
+	min-width: 200px;
+	padding: 0.5rem 0.875rem;
+	font-size: 0.875rem;
+	color: var(--sw-fg);
+	background: var(--sw-surface);
+	border: 1px solid var(--sw-border);
+	border-radius: 0.75rem;
+	outline: none;
+	transition:
+		border-color 0.2s,
+		box-shadow 0.2s;
+}
+
+.sw-search::placeholder {
+	color: var(--sw-muted);
+}
+
+.sw-search:focus {
+	border-color: var(--sw-primary);
+	box-shadow: 0 0 0 3px var(--sw-primary-ring);
+}
+
+.sw-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.3rem 0.75rem;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: var(--sw-muted);
+	background: var(--sw-surface-soft);
+	border: 1px solid var(--sw-border);
+	border-radius: 999px;
+	cursor: pointer;
+	transition:
+		color 0.2s,
+		background 0.2s,
+		border-color 0.2s;
+}
+
+.sw-pill:hover {
+	color: var(--sw-fg);
+}
+
+.sw-pill[data-active] {
+	color: #ffffff;
+	background: var(--sw-primary);
+	border-color: var(--sw-primary);
+}
+
+/* ── 卡片网格 ───────────────────────────────────── */
+.sw-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 1.25rem;
+}
+
+.sw-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 1rem;
+	background: var(--sw-surface);
+	border: 1px solid var(--sw-border);
+	border-radius: var(--sw-radius);
+	box-shadow: var(--sw-shadow);
+	transition:
+		transform 0.2s,
+		box-shadow 0.25s,
+		border-color 0.2s;
+}
+
+.sw-card:hover {
+	transform: translateY(-3px);
+	border-color: var(--sw-primary);
+	box-shadow: var(--sw-shadow-hover);
+}
+
+.sw-cover {
+	aspect-ratio: 16 / 9;
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	border-radius: 0.75rem;
+	background: linear-gradient(
+		135deg,
+		var(--sw-primary) 0%,
+		var(--sw-secondary) 100%
+	);
+	color: #ffffff;
+	font-size: 2rem;
+	font-weight: 700;
+}
+
+.sw-cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.sw-title {
+	margin: 0;
+	font-size: 1.125rem;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.sw-desc {
+	margin: 0;
+	font-size: 0.875rem;
+	line-height: 1.6;
+	color: var(--sw-muted);
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.sw-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.8125rem;
+	color: var(--sw-muted);
+}
+
+.sw-status {
+	padding: 0.1rem 0.5rem;
+	font-size: 0.75rem;
+	border-radius: 999px;
+	color: var(--sw-primary);
+	background: var(--sw-primary-soft);
+}
+
+.sw-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.375rem;
+	margin-top: auto;
+}
+
+.sw-tag {
+	padding: 0.1rem 0.5rem;
+	font-size: 0.75rem;
+	color: var(--sw-muted);
+	background: var(--sw-surface-soft);
+	border: 1px solid var(--sw-border);
+	border-radius: 0.375rem;
+}
+
+.sw-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	font-size: 0.8125rem;
+}
+
+.sw-links a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	color: var(--sw-primary);
+	text-decoration: none;
+}
+
+.sw-links a:hover {
+	text-decoration: underline;
+}
+
+/* 整卡可点：铺满卡片的透明链接 */
+.sw-stretched {
+	position: absolute;
+	inset: 0;
+	border-radius: var(--sw-radius);
+}
+
+.sw-stretched:focus-visible {
+	outline: 2px solid var(--sw-primary);
+	outline-offset: 2px;
+}
+
+.sw-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 3rem 0;
+	color: var(--sw-muted);
+}
