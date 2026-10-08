@@ -157,14 +157,16 @@ export const siteConfig: SiteConfig = {
 	// ── 文章列表布局配置 ──────────────────────────────────
 	postListLayout: {
 		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（多列布局）
-		defaultMode: "list",
+		// 与项目页卡片网格保持一致：走 grid，桌面三列（列数规则在 minibili-theme.css）
+		defaultMode: "grid",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
 		mobileDefaultMode: "list",
 		// 列表模式下封面图显示在哪一侧："right" 右侧，"left" 左侧
 		// 网格模式的封面固定在卡片顶部，不受此项影响
 		coverPosition: "right",
 		// 文章简介显示行数，设为 0 则不截断
-		descriptionLines: 2,
+		// 与项目卡一致：三行截断
+		descriptionLines: 3,
 		// 文章卡片底部统计和发布日期是否显示图标
 		// 统一美学：去掉这些小图标，只留文字与日期
 		showStatsIcons: false,

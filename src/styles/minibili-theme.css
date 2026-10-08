@@ -122,9 +122,64 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	opacity: 0.6;
 }
 
-/* ── 侧栏：排版与配色统一（资料卡 / 公告 / 分类 / 标签）── */
+/* ── 全局：图标 / 按钮的常驻底色去掉，hover / 点击才渲染 ────
+   涉及：导航栏按钮、资料卡社交按钮、文章元信息图标（.meta-icon）、
+   侧栏计数徽标、项目页标签与状态标签。 */
+#navbar .btn-plain,
+#navbar .btn-regular,
+#left-sidebar .btn-regular,
+#left-sidebar .btn-plain,
+.meta-icon,
+.widget-count-badge,
+.sw-tag,
+.sw-status,
+.sw-pill {
+	background: transparent !important;
+	border-color: var(--mb-hairline) !important;
+	color: var(--btn-content) !important;
+	transition:
+		color 200ms var(--mb-ease),
+		border-color 200ms var(--mb-ease),
+		background-color 200ms var(--mb-ease);
+}
+
+#navbar .btn-plain:hover,
+#navbar .btn-regular:hover,
+#left-sidebar .btn-regular:hover,
+#left-sidebar .btn-plain:hover,
+.meta-icon:hover,
+.widget-count-badge:hover,
+.sw-tag:hover,
+.sw-status:hover,
+.sw-pill:hover {
+	color: var(--primary) !important;
+	border-color: color-mix(in srgb, var(--primary) 45%, transparent) !important;
+	background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+}
+
+#navbar .btn-plain:active,
+#navbar .btn-regular:active,
+#left-sidebar .btn-regular:active,
+.meta-icon:active,
+.sw-pill:active {
+	background: color-mix(in srgb, var(--primary) 16%, transparent) !important;
+}
+
+/* ── 侧栏：四个组件统一渲染 ────────────────────────── */
+#left-sidebar .card-base,
+#left-sidebar widget-layout.card-base {
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
 #left-sidebar .card-base + .card-base {
 	margin-top: 1rem;
+}
+
+/* WidgetLayout 内部还有一层 px-4，外框统一内边距后这里要归零 */
+#left-sidebar widget-layout .collapse-wrapper {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
 }
 
 #left-sidebar a,
@@ -137,17 +192,92 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	color: var(--primary);
 }
 
-/* 侧栏组件标题弱化，避免四组件堆叠后视觉过重 */
+/* 组件标题：统一字号与左侧竖条位置 */
 #left-sidebar .card-base h2,
-#left-sidebar .card-base h3 {
+#left-sidebar .card-base h3,
+#left-sidebar .widget-title {
 	font-size: 0.9375rem;
 	font-weight: 600;
 	color: var(--btn-content);
+	margin-left: 0 !important;
+	padding-left: 0.75rem;
+	margin-top: 0;
+}
+
+#left-sidebar .widget-title::before {
+	left: 0 !important;
+	top: 0.35rem !important;
+	height: 0.8rem !important;
+	width: 2px !important;
 }
 
 /* ── 正文 ────────────────────────────────────────── */
 .prose {
 	line-height: 1.75;
+}
+
+/* ── 统一的三列卡片网格：项目页与文章列表同一套断点 ────
+   <768px 单列 / 768–1279px 两列 / ≥1280px 三列 */
+.sw-grid,
+#post-list-container.post-grid-auto {
+	display: grid;
+	gap: 1.25rem;
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+	.sw-grid,
+	#post-list-container.post-grid-auto {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (min-width: 1280px) {
+	.sw-grid,
+	#post-list-container.post-grid-auto {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+/* ── 文章卡与项目卡视觉对齐 ──────────────────────── */
+#post-list-container.grid-mode .post-card-wrapper {
+	--grid-card-padding: 1rem;
+	border-radius: 1rem;
+}
+
+#post-list-container.grid-mode .post-card-content {
+	padding: 1rem !important;
+}
+
+#post-list-container.grid-mode .post-card-title {
+	font-size: 1.125rem !important;
+	line-height: 1.5 !important;
+	font-weight: 600;
+	margin-bottom: 0.5rem !important;
+}
+
+#post-list-container.grid-mode .description {
+	font-size: 0.875rem !important;
+	line-height: 1.6 !important;
+}
+
+/* 网格模式隐藏右侧箭头按钮，改为整卡可点（同项目页 .sw-stretched），
+   底部标签抬高层级保证仍可点击 */
+#post-list-container.grid-mode .post-card-enter-btn {
+	display: none !important;
+}
+
+#post-list-container.grid-mode .post-card-title::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	border-radius: 1rem;
+}
+
+#post-list-container.grid-mode .post-card-bottom-tags {
+	position: relative;
+	z-index: 2;
 }
 
 .prose h2 {
