@@ -402,8 +402,31 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	}
 }
 
-#banner-overlay-container .banner-home-text-overlay .banner-links {
-	justify-content: flex-start !important;
+/* ==========================================================================
+   全局标题字号降一档
+   主题各处的标题直接用了 text-4xl/5xl 这类固定档位，基准字号缩到 14px 后
+   视觉上仍然偏大。这里用元素选择器统一收一档：非分层规则优先级高于
+   Tailwind 的 @layer utilities，所以能压过组件里的 text-* 类，
+   但不会影响文章正文里由 .prose/:is() 等更高特异性选择器控制的标题层级。
+   想微调改下面的 rem 值即可（1rem = 14px）。
+   ========================================================================== */
+h1 {
+	font-size: 1.9rem;
+	line-height: 1.25;
+}
+h2 {
+	font-size: 1.4rem;
+	line-height: 1.35;
+}
+h3 {
+	font-size: 1.15rem;
+	line-height: 1.4;
+}
+h4,
+h5,
+h6 {
+	font-size: 1rem;
+	line-height: 1.5;
 }
 
 /* 尊重"减少动效"偏好 */

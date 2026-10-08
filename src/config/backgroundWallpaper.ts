@@ -64,8 +64,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			enable: true,
 			// 主页横幅主标题
 			title: "Xmore's Blog",
-			// 主页横幅主标题字体大小
-			titleSize: "4.5rem",
+			// 主页横幅主标题字体大小（配合全局标题降档，这里同步收敛）
+			titleSize: "3.25rem",
 			// 主页横幅副标题
 			subtitle: ["写下来，才算发生过"],
 			// 主页横幅副标题字体大小
@@ -82,8 +82,9 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				// 完全显示后的暂停时间（毫秒）
 				pauseTime: 2000,
 			},
-			// 是否显示标题下方的链接图标
-			linksEnable: true,
+			// 是否显示标题下方的链接图标（GitHub/Email/RSS 已隐藏，
+			// 资料卡和页脚仍有同样入口；要恢复改回 true 即可，links 配置保留）
+			linksEnable: false,
 			// 首页横幅标题下方的链接图标（可选，支持 showName 显示文字）
 			// 图标支持 Iconify 格式：fa7-brands:github、fa7-solid:envelope、mdi:rss 等
 			links: [
