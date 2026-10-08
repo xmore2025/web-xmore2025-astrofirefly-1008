@@ -142,7 +142,8 @@ export const siteConfig: SiteConfig = {
 	// 分类导航栏按钮样式
 	// "pill"：胶囊，主题色浅底圆角
 	// "rectangle"：矩形，配色同胶囊，仅圆角更小
-	categoryStyle: "rectangle",
+	// 与标签胶囊统一形状，视觉更齐整
+	categoryStyle: "pill",
 
 	// 标签样式，作用于文章列表底部标签、标签页和侧边栏标签
 	// "pill"：胶囊，主题色底圆角
@@ -165,7 +166,8 @@ export const siteConfig: SiteConfig = {
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 文章卡片底部统计和发布日期是否显示图标
-		showStatsIcons: true,
+		// 统一美学：去掉这些小图标，只留文字与日期
+		showStatsIcons: false,
 		// 标签显示位置
 		// 设置为"meta"：显示在文章标题下的元数据
 		// 设置为"bottom"：顶替stats在底部显示
@@ -173,7 +175,8 @@ export const siteConfig: SiteConfig = {
 		// 底部标签样式，仅在 tagsPosition 为 "bottom" 时生效
 		// "chip"：按钮样式，形状跟随上方的 tagStyle 配置
 		// "text"：无底色，只有文字
-		tagsBottomStyle: "chip",
+		// 统一美学：文章卡底部标签去掉色块，只留文字，hover 才染色
+		tagsBottomStyle: "text",
 		// PostMeta 元数据显示控制
 		meta: {
 			// 是否显示发布日期

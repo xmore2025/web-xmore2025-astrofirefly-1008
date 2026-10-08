@@ -12,9 +12,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	// right: 仅显示右侧边栏
 	// both: 双侧边栏，1280px以上同时显示左右，769-1279px根据tabletSidebar配置显示其中一侧
 	//
-	// 三列优先：左栏（资料卡 + 分类）+ 正文 + 右栏（文章页为目录，其它页为站点统计）。
-	// 1280px 以上三列同显；769–1279px 按 tabletSidebar 只留一侧，<769px 单列并走移动端底部组件。
-	position: "both",
+	// 当前只用单侧栏：左栏（资料卡 + 公告 + 分类 + 标签）+ 正文。
+	// 右栏组件已全部关闭（含文章页目录），文章页目录由 FloatingTOC 提供。
+	// 想恢复三列：把这里改成 "both"，并启用右栏的 sidebarToc 即可（配置都还留着）。
+	position: "left",
 
 	// 平板端(769-1279px)显示哪侧侧边栏，仅position为both时生效
 	// left: 平板端显示左侧边栏
@@ -48,16 +49,16 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			showOnPostPage: true,
 		},
 		{
-			// 组件类型：公告组件
+			// 组件类型：公告组件（文案在 src/config/announcementConfig.ts）
 			type: "announcement",
 			// 是否启用该组件
-			enable: false,
+			enable: true,
 			// 组件位置
 			position: "top",
 			// 是否在文章详情页显示
 			showOnPostPage: true,
-		},
-		{
+			},
+			{
 			// 组件类型：音乐播放器
 			type: "music",
 			// 是否启用该组件
@@ -84,10 +85,9 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 		{
 			// 组件类型：标签组件
-			// 分类与标签二选一，侧栏只留分类；标签页仍在导航栏「文章 → 标签」
 			type: "tags",
 			// 是否启用该组件
-			enable: false,
+			enable: true,
 			// 组件位置
 			position: "sticky",
 			// 是否在文章详情页显示
@@ -122,9 +122,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		{
 			// 组件类型：站点统计组件
 			// 非文章页的右栏内容：文章页右栏由下面的「目录」接管（showOnPostPage: false）
+			// 暂不使用右栏，随 position 改回 "both" 时一起打开
 			type: "stats",
 			// 是否启用该组件
-			enable: true,
+			enable: false,
 			// 组件位置
 			position: "top",
 			// 是否在文章详情页显示
@@ -168,9 +169,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 		{
 			// 组件类型：侧边栏目录组件（只在文章详情页显示）
+			// 暂不使用右栏；文章页目录改由 FloatingTOC 悬浮目录提供
 			type: "sidebarToc",
 			// 是否启用该组件
-			enable: true,
+			enable: false,
 			// 组件位置
 			position: "sticky",
 			// 是否在文章详情页显示
@@ -251,11 +253,11 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 组件类型：公告组件
 			type: "announcement",
 			// 是否启用该组件
-			enable: false,
+			enable: true,
 			// 是否在文章详情页显示
 			showOnPostPage: true,
-		},
-		{
+			},
+			{
 			// 组件类型：分类组件
 			type: "categories",
 			// 是否启用该组件
@@ -270,10 +272,10 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 		{
 			// 组件类型：标签组件
-			// 同上：移动端底部也只保留分类，避免两个列表堆在一起
+			// 与左栏保持一致：移动端底部同样展示资料卡 / 公告 / 分类 / 标签
 			type: "tags",
 			// 是否启用该组件
-			enable: false,
+			enable: true,
 			// 是否在文章详情页显示
 			showOnPostPage: true,
 			// 组件专属配置

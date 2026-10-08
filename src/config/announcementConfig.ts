@@ -4,8 +4,8 @@ export const announcementConfig: AnnouncementConfig = {
 	// 公告标题，留空则走i18n默认标题
 	title: "",
 
-	// 公告内容
-	content: "欢迎来到我的博客！这是一则示例公告。",
+	// 公告内容（左栏公告组件已启用，这段文字会显示在主页侧栏）
+	content: "写下来，才算发生过。站点刚上线，文章会持续更新。",
 
 	// 是否允许用户关闭公告
 	closable: true,

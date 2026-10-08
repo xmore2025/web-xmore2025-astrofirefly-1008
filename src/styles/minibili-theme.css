@@ -1,23 +1,26 @@
 /* ==========================================================================
-   视觉层：参考 MiniBili 官网模板（F:\Down-Load\MiniBili-WEB-main\MiniBili-WEB-main）
-   只搬"看得见"的三件事，不动布局骨架：
+   视觉层（在 main.css 最后引入，覆盖上方同名规则）
 
-   1) 强调色：B站粉 #FB7299 —— 由 siteConfig.themeColor.hue = 343 统一驱动，
-      这里不再重复定义色值，全部引用 --primary。
-   2) 卡片：玻璃质感 —— 柔和外阴影 + 1px 内高光边（MiniBili .glass 的关键细节），
-      圆角沿用主题的 --radius-large（1rem）。
-   3) 图标：hover 放大 1.1 倍，全站统一 300ms + cubic-bezier(.22,1,.36,1) 缓动。
+   1) 强调色：由 siteConfig.themeColor.hue 统一驱动，这里不重复定义色值，
+      一律引用 --primary（当前 B站粉 #FB7299）。
+   2) 卡片：柔和外阴影 + 1px 内高光边，hover 上浮 3px。
+   3) 图标：不做放大动效，默认中性色，hover / 点击才染强调色。
+   4) 标签 / 分类：去掉常驻背景色块，只在 hover / 点击时才渲染底色与强调色。
+   5) 侧栏排版：卡片间距、内边距、链接 hover 统一，贴合单侧栏（左栏四组件）布局。
    ========================================================================== */
 
 :root {
-	/* MiniBili 的主力缓动曲线（expressive easing） */
+	/* 主力缓动曲线 */
 	--mb-ease: cubic-bezier(0.22, 1, 0.36, 1);
 	--mb-duration: 300ms;
-	/* 玻璃卡片阴影：大范围低透明，比 shadow-xs 更有"浮起"感 */
+
+	/* 卡片阴影与内高光 */
 	--mb-card-shadow: 0 8px 32px -12px rgb(17 20 27 / 0.18);
 	--mb-card-shadow-hover: 0 16px 40px -14px rgb(17 20 27 / 0.28);
-	/* 内高光：模拟玻璃上边缘反光 */
 	--mb-card-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.6);
+
+	/* 统一细分割线 */
+	--mb-hairline: color-mix(in srgb, var(--btn-content) 14%, transparent);
 }
 
 .dark {
@@ -41,39 +44,108 @@
 	box-shadow: var(--mb-card-shadow), var(--mb-card-highlight);
 }
 
-/* 文章卡 / 项目卡：hover 上浮 3px + 阴影加深 + 强调色描边 */
 .card-base:has(.post-card-title):hover,
 .card-base:has(.project-card):hover {
 	transform: translateY(-3px);
 	box-shadow: var(--mb-card-shadow-hover), var(--mb-card-highlight);
-	border-color: var(--primary);
+	border-color: color-mix(in srgb, var(--primary) 45%, transparent);
 }
 
-/* ── 图标：hover 放大 ───────────────────────────── */
+/* ── 图标：中性色，hover / 点击才染强调色（不做放大）── */
 #navbar svg,
 .mobile-menu-item-icon,
-.card-base svg,
-.btn-card svg {
-	transition:
-		transform var(--mb-duration) var(--mb-ease),
-		color 200ms ease;
+#left-sidebar svg,
+.card-base svg {
+	color: var(--btn-content);
+	transition: color 200ms var(--mb-ease);
 }
 
 #navbar a:hover svg,
 #navbar button:hover svg,
 .mobile-menu-item:hover .mobile-menu-item-icon,
-.card-base:has(.post-card-title):hover svg,
-.sw-card:hover svg {
-	transform: scale(1.1);
-}
-
-/* ── 标签 / 药丸：hover 用强调色（MiniBili 的 chip 做法）── */
-.category-pill:hover,
-.sw-pill:hover:not([data-active]) {
+#left-sidebar a:hover svg,
+#left-sidebar button:hover svg {
 	color: var(--primary);
 }
 
-/* ── 文章正文：行宽与标题节奏（参考 MiniBili 法务文档页）── */
+/* ── 标签 / 分类：去常驻色块，hover / 点击才渲染 ──── */
+/* 这里必须用 !important：
+   tags.css / categories.css 用 html[data-tag-style="pill"] .tag-item 这类
+   带属性选择器的组合（优先级 0,2,1），普通的 .tag-item 压不过；
+   而压缩器会把 ".tag-item.tag-item" 这类重复类名折叠掉，靠叠类名提权也无效。 */
+html[data-tag-style] .tag-item,
+.tag-item,
+html[data-category-style] .category-pill,
+.category-pill {
+	background: transparent !important;
+	border: 1px solid var(--mb-hairline) !important;
+	color: var(--btn-content) !important;
+	transition:
+		color 200ms var(--mb-ease),
+		border-color 200ms var(--mb-ease),
+		background-color 200ms var(--mb-ease);
+}
+
+html[data-tag-style] .tag-item:hover,
+.tag-item:hover,
+html[data-category-style] .category-pill:hover,
+.category-pill:hover {
+	color: var(--primary) !important;
+	border-color: color-mix(in srgb, var(--primary) 45%, transparent) !important;
+	background: color-mix(in srgb, var(--primary) 8%, transparent) !important;
+}
+
+html[data-tag-style] .tag-item:active,
+.tag-item:active,
+html[data-category-style] .category-pill:active,
+.category-pill:active {
+	background: color-mix(in srgb, var(--primary) 16%, transparent) !important;
+}
+
+/* 选中态：强调色文字 + 描边，不铺实心底 */
+.category-pill[data-active],
+.category-pill[data-active]:hover,
+.category-pill[data-soft-active],
+.category-pill[data-soft-active]:hover {
+	background: transparent !important;
+	color: var(--primary) !important;
+	border-color: var(--primary) !important;
+	font-weight: 600;
+}
+
+/* 计数徽标同样去掉色块 */
+html[data-tag-style] .tag-item .tag-count-badge,
+.tag-item .tag-count-badge,
+.category-pill .pill-count {
+	background: transparent !important;
+	color: inherit;
+	opacity: 0.6;
+}
+
+/* ── 侧栏：排版与配色统一（资料卡 / 公告 / 分类 / 标签）── */
+#left-sidebar .card-base + .card-base {
+	margin-top: 1rem;
+}
+
+#left-sidebar a,
+#left-sidebar button {
+	transition: color 200ms var(--mb-ease);
+}
+
+#left-sidebar a:hover,
+#left-sidebar button:hover {
+	color: var(--primary);
+}
+
+/* 侧栏组件标题弱化，避免四组件堆叠后视觉过重 */
+#left-sidebar .card-base h2,
+#left-sidebar .card-base h3 {
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: var(--btn-content);
+}
+
+/* ── 正文 ────────────────────────────────────────── */
 .prose {
 	line-height: 1.75;
 }
@@ -81,14 +153,15 @@
 .prose h2 {
 	font-weight: 700;
 	padding-bottom: 0.4rem;
-	border-bottom: 1px solid var(--line-divider);
+	border-bottom: 1px solid var(--mb-hairline);
 }
 
 /* 尊重"减少动效"偏好 */
 @media (prefers-reduced-motion: reduce) {
 	.card-base,
 	.card-base svg,
-	#navbar svg {
+	#navbar svg,
+	#left-sidebar a {
 		transition: none !important;
 	}
 
