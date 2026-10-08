@@ -12,10 +12,9 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	// right: 仅显示右侧边栏
 	// both: 双侧边栏，1280px以上同时显示左右，769-1279px根据tabletSidebar配置显示其中一侧
 	//
-	// 单侧栏：双侧栏在宽屏下会把正文挤到中间，反而显得拥挤。
-	// 只保留「个人资料卡 + 分类」两个组件，标签走导航栏的「文章 → 标签」入口；
-	// 文章页目录由 FloatingTOC 提供，不依赖右侧栏
-	position: "left",
+	// 三列优先：左栏（资料卡 + 分类）+ 正文 + 右栏（文章页为目录，其它页为站点统计）。
+	// 1280px 以上三列同显；769–1279px 按 tabletSidebar 只留一侧，<769px 单列并走移动端底部组件。
+	position: "both",
 
 	// 平板端(769-1279px)显示哪侧侧边栏，仅position为both时生效
 	// left: 平板端显示左侧边栏
@@ -102,7 +101,6 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 	],
 
 	// 右侧边栏组件配置列表
-	// position 为 left 时右侧栏整体不渲染，这里的配置仅作为日后切回双侧栏的备份
 	rightComponents: [
 		{
 			// 组件类型：最新动态组件
@@ -123,15 +121,16 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 		},
 		{
 			// 组件类型：站点统计组件
+			// 非文章页的右栏内容：文章页右栏由下面的「目录」接管（showOnPostPage: false）
 			type: "stats",
 			// 是否启用该组件
-			enable: false,
+			enable: true,
 			// 组件位置
 			position: "top",
 			// 是否在文章详情页显示
 			showOnPostPage: false,
-		},
-		{
+			},
+			{
 			// 组件类型：站点信息组件
 			type: "siteInfo",
 			// 是否启用该组件

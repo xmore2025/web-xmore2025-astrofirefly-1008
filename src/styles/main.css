@@ -9,6 +9,8 @@
 @import './display-settings.css';
 @import './categories.css';
 @import './layout-base.css';
+/* 视觉层（玻璃卡片 / 图标动效 / 正文节奏），放最后以覆盖上方同名规则 */
+@import './minibili-theme.css';
 
 @plugin '@tailwindcss/typography';
 

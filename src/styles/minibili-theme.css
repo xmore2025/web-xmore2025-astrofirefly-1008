@@ -1,0 +1,98 @@
+/* ==========================================================================
+   视觉层：参考 MiniBili 官网模板（F:\Down-Load\MiniBili-WEB-main\MiniBili-WEB-main）
+   只搬"看得见"的三件事，不动布局骨架：
+
+   1) 强调色：B站粉 #FB7299 —— 由 siteConfig.themeColor.hue = 343 统一驱动，
+      这里不再重复定义色值，全部引用 --primary。
+   2) 卡片：玻璃质感 —— 柔和外阴影 + 1px 内高光边（MiniBili .glass 的关键细节），
+      圆角沿用主题的 --radius-large（1rem）。
+   3) 图标：hover 放大 1.1 倍，全站统一 300ms + cubic-bezier(.22,1,.36,1) 缓动。
+   ========================================================================== */
+
+:root {
+	/* MiniBili 的主力缓动曲线（expressive easing） */
+	--mb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+	--mb-duration: 300ms;
+	/* 玻璃卡片阴影：大范围低透明，比 shadow-xs 更有"浮起"感 */
+	--mb-card-shadow: 0 8px 32px -12px rgb(17 20 27 / 0.18);
+	--mb-card-shadow-hover: 0 16px 40px -14px rgb(17 20 27 / 0.28);
+	/* 内高光：模拟玻璃上边缘反光 */
+	--mb-card-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.6);
+}
+
+.dark {
+	--mb-card-shadow: 0 8px 32px -12px rgb(0 0 0 / 0.6);
+	--mb-card-shadow-hover: 0 16px 40px -14px rgb(0 0 0 / 0.75);
+	--mb-card-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+}
+
+/* ── 卡片：玻璃质感 ─────────────────────────────── */
+.card-base,
+.card-base-transparent {
+	transition:
+		transform var(--mb-duration) var(--mb-ease),
+		box-shadow var(--mb-duration) var(--mb-ease),
+		border-color var(--mb-duration) var(--mb-ease);
+}
+
+.enable-card-border .card-base,
+.enable-card-border .card-base-transparent,
+.enable-card-border .btn-card {
+	box-shadow: var(--mb-card-shadow), var(--mb-card-highlight);
+}
+
+/* 文章卡 / 项目卡：hover 上浮 3px + 阴影加深 + 强调色描边 */
+.card-base:has(.post-card-title):hover,
+.card-base:has(.project-card):hover {
+	transform: translateY(-3px);
+	box-shadow: var(--mb-card-shadow-hover), var(--mb-card-highlight);
+	border-color: var(--primary);
+}
+
+/* ── 图标：hover 放大 ───────────────────────────── */
+#navbar svg,
+.mobile-menu-item-icon,
+.card-base svg,
+.btn-card svg {
+	transition:
+		transform var(--mb-duration) var(--mb-ease),
+		color 200ms ease;
+}
+
+#navbar a:hover svg,
+#navbar button:hover svg,
+.mobile-menu-item:hover .mobile-menu-item-icon,
+.card-base:has(.post-card-title):hover svg,
+.sw-card:hover svg {
+	transform: scale(1.1);
+}
+
+/* ── 标签 / 药丸：hover 用强调色（MiniBili 的 chip 做法）── */
+.category-pill:hover,
+.sw-pill:hover:not([data-active]) {
+	color: var(--primary);
+}
+
+/* ── 文章正文：行宽与标题节奏（参考 MiniBili 法务文档页）── */
+.prose {
+	line-height: 1.75;
+}
+
+.prose h2 {
+	font-weight: 700;
+	padding-bottom: 0.4rem;
+	border-bottom: 1px solid var(--line-divider);
+}
+
+/* 尊重"减少动效"偏好 */
+@media (prefers-reduced-motion: reduce) {
+	.card-base,
+	.card-base svg,
+	#navbar svg {
+		transition: none !important;
+	}
+
+	.card-base:has(.post-card-title):hover {
+		transform: none;
+	}
+}
