@@ -363,6 +363,25 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	text-wrap: pretty;
 }
 
+/* ── 横幅文字块下移 ───────────────────────────────
+   标题/副标题/链接从正中移到横幅下部（约下三分之一）：
+   上半段完整让给壁纸的"天空"，视线动线也从标题自然滑向下方内容区。
+   banner-home.css 在多个断点用 center !important 压住，这里用
+   更高优先级选择器 + !important 覆盖。 */
+#banner-overlay-container .banner-home-text-overlay {
+	align-items: flex-end !important;
+}
+
+#banner-overlay-container .banner-home-text-overlay > div {
+	margin-bottom: 8vh;
+}
+
+@media (max-height: 720px), (max-width: 640px) {
+	#banner-overlay-container .banner-home-text-overlay > div {
+		margin-bottom: 3.5rem;
+	}
+}
+
 /* 尊重"减少动效"偏好 */
 @media (prefers-reduced-motion: reduce) {
 	.card-base,
