@@ -38,10 +38,12 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	src: {
 		// 桌面背景图片（支持单张或多张随机）
 		// 单张固定图：随机轮换会让列表页视觉不稳定，简约站固定一张即可
-		// 图源由 scripts/generate-theme-assets.mjs 生成，与主题色严格一致
-		desktop: "assets/images/DesktopWallpaper/ink-blue.avif",
+		// 自定义壁纸：Unsplash（vlad-d），已用 sharp 预压到 1920 宽 / 105KB，
+		// 构建时 Astro 再按 1280/1920 生成响应式 avif/webp
+		desktop: "assets/images/DesktopWallpaper/banner-unsplash.webp",
 		// 移动背景图片（支持单张或多张随机）
-		mobile: "assets/images/MobileWallpaper/ink-blue.avif",
+		// 同一张图预压到 1080 宽 / 32KB，避免手机端下载桌面大图
+		mobile: "assets/images/MobileWallpaper/banner-unsplash.webp",
 		// 背景视频播放地址
 		// 支持单个视频路径（字符串）或多个视频循环（数组，参考上面壁纸配置）
 		// 支持远程视频URL，本地视频请放在 public/assets/videos/ 目录下
@@ -51,7 +53,9 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 横幅壁纸和全屏壁纸共享配置
 	common: {
 		// 壁纸遮罩暗度，让横幅文字显示更清晰，0-1之间，值越大越暗
-		dimOpacity: 0.2,
+		// 0.2 → 0.35：新壁纸上半部偏亮（实测亮度 0.6），白色标题/副标题压不住，
+		// 实测 0.35 时白字对比度约 5.8:1，同时照片质感还在
+		dimOpacity: 0.35,
 		// 多视频播放模式："order" 顺序循环，"random" 随机切换（仅当 playerUrl 为数组时生效）
 		playerMode: "random",
 		// 主页横幅文字
