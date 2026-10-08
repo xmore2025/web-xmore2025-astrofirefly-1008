@@ -40,10 +40,21 @@ export const fontsList: FontDefinition[] = [
 		name: "Inter",
 		cssVariable: "--font-inter",
 		provider: "fontsource",
-		weights: ["300", "400", "500", "600", "700"],
+		// 只留常用四个字重 + latin 子集：少一半请求，体积也更小
+		weights: ["400", "500", "600", "700"],
 		styles: ["normal"],
-		subsets: ["latin", "cyrillic"],
-		fallbacks: ["sans-serif"],
+		subsets: ["latin"],
+		// Inter 只覆盖拉丁字形，中文走这串 fallback 交给系统字体
+		fallbacks: [
+			"system-ui",
+			"-apple-system",
+			"PingFang SC",
+			"HarmonyOS Sans SC",
+			"Source Han Sans SC",
+			"Noto Sans CJK SC",
+			"Microsoft YaHei",
+			"sans-serif",
+		],
 	},
 	{
 		name: "JetBrains Mono",
@@ -51,7 +62,7 @@ export const fontsList: FontDefinition[] = [
 		provider: "fontsource",
 		weights: ["400", "700"],
 		styles: ["normal"],
-		subsets: ["latin", "cyrillic"],
+		subsets: ["latin"],
 		fallbacks: [
 			"ui-monospace",
 			"SFMono-Regular",
@@ -86,10 +97,12 @@ export const fontsList: FontDefinition[] = [
 // ─── 字体选择与区域覆盖 ─────────────────────────────────────
 export const fontConfig: FontSelectionConfig = {
 	// 是否启用自定义字体功能（关闭 = 使用系统字体栈，构建期不下载字体，最快）
-	enable: false,
+	// Inter 由 fontsource 提供，构建时下载并自托管 woff2，本站不依赖 Google Fonts
+	// 中文不打包 webfont（体积太大），交给下方 fallback 里的系统字体
+	enable: true,
 	// 当前选择的字体 CSS 变量名（对应上方 fonts 中的 cssVariable）
 	// 使用 "system" 表示系统字体（不加载任何自定义字体）
-	selected: ["system"],
+	selected: ["--font-inter"],
 
 	// 各区域独立字体设置（填写上方 fonts 中的 cssVariable，留空则使用全局 selected 字体）
 	// 例如：bannerTitleFont: "--font-inter", 表示主页横幅主标题使用 Inter 字体
@@ -100,7 +113,7 @@ export const fontConfig: FontSelectionConfig = {
 	// 导航栏标题字体
 	navbarTitleFont: "",
 	// 代码块字体（用于代码高亮和等宽字体场景）
-	codeFont: "",
+	codeFont: "--font-jetbrains-mono",
 
 	// 本地字体子集化配置（构建时由 scripts/subset-fonts.ts 处理）
 	// key 为 fonts 数组中对应的 cssVariable，value 为子集化选项

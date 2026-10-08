@@ -3,5 +3,3 @@ packages:
 allowBuilds:
   esbuild: true
   workerd: true
-# 运行脚本前不要自动校验/重装依赖：本机在 exFAT 卷上，pnpm 的符号链接布局会直接失败
-verifyDepsBeforeRun: false

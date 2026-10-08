@@ -1,0 +1,5 @@
+Contact: https://github.com/xmore2025/web-xmore2025-astrofirefly-1008/security/advisories/new
+Expires: 2030-01-01T00:00:00.000Z
+Preferred-Languages: zh-CN, en
+Canonical: https://web-admin.xmorexz.dpdns.org/.well-known/security.txt
+Policy: https://github.com/xmore2025/web-xmore2025-astrofirefly-1008/security/policy
