@@ -40,11 +40,25 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 关于
 	links.push(LinkPresets.About);
 
+	// 工具：自己的两个外链小站，收进子菜单，避免导航栏平铺太多项
 	links.push({
-		name: "GitHub",
-		url: "https://github.com/xmore2025",
-		external: true,
-		icon: "fa7-brands:github",
+		name: "工具",
+		url: "#",
+		icon: "material-symbols:construction",
+		children: [
+			{
+				name: "图床",
+				url: "https://maxs-zxtk.204680.xyz",
+				external: true,
+				icon: "material-symbols:photo-library",
+			},
+			{
+				name: "导航",
+				url: "https://nav-panel.204680.xyz",
+				external: true,
+				icon: "material-symbols:explore",
+			},
+		],
 	});
 
 	// 文档链接
