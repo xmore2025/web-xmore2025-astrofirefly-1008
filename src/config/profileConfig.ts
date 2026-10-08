@@ -8,8 +8,8 @@ export const profileConfig: ProfileConfig = {
 	// 3. 远程 URL："https://example.com/avatar.jpg"
 	avatar: "assets/images/avatar.avif",
 
-	// 名字
-	name: "Xmore",
+	// 名字（页脚、资料卡、RSS 作者名统一取这里，与页脚 © 文案保持一致）
+	name: "xmore",
 
 	// 个人签名
 	bio: "记录技术、阅读与生活。",

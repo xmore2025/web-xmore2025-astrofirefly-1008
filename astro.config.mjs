@@ -14,17 +14,20 @@ import icon from "astro-icon";
 import { pluginLanguageLogo } from "ec-lang-logo"; /* Language Logo */
 import { pluginCollapsible } from "expressive-code-collapsible"; /* Collapsible */
 import { pluginLanguageBadge } from "expressive-code-language-badge"; /* Language Badge */
-import katex from "katex";
-import "katex/dist/contrib/mhchem.mjs"; // 加载 mhchem 扩展
+// KaTeX（数学公式）已按需关闭：本站暂无公式内容，留着会往文章页塞进
+// 19 个 KaTeX 字体（约 250KB）+ katex.min.css。需要公式时把下面三行取消注释，
+// 并在 markdown.remarkPlugins 加 remarkMath、rehypePlugins 加 [rehypeKatex, { katex }]
+// import katex from "katex";
+// import "katex/dist/contrib/mhchem.mjs"; // 加载 mhchem 扩展
+// import rehypeKatex from "rehype-katex";
+// import remarkMath from "remark-math";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeCallouts from "rehype-callouts";
 import rehypeCodeGroup from "rehype-code-group"; /* Tab 代码块 */
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
-import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkAdmonitionToBlockquoteCallout from "remark-admonition-to-blockquote-callout";
 import remarkDirective from "remark-directive"; /* Handle directives */
-import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import {
 	commentConfig,
@@ -293,7 +296,7 @@ export default defineConfig({
 				false
 					? [remarkAdmonitionToBlockquoteCallout]
 					: []),
-				remarkMath,
+				// remarkMath, // KaTeX 关闭时同步停用（见文件顶部注释）
 				remarkReadingTime,
 				remarkWikiLink,
 				remarkImageGrid,
@@ -305,7 +308,7 @@ export default defineConfig({
 				[remarkPlantuml, plantumlConfig],
 			],
 			rehypePlugins: [
-				[rehypeKatex, { katex }],
+				// [rehypeKatex, { katex }], // KaTeX 关闭时同步停用
 				[rehypeCallouts, { theme: siteConfig.post.rehypeCallouts.theme }],
 				rehypeSlug,
 				rehypeCodeGroup,

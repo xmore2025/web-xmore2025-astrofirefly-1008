@@ -3,7 +3,8 @@ import { render } from "astro:content";
 import Comment from "@components/comment/index.astro";
 import Markdown from "@components/common/Markdown.astro";
 import EncryptedPost from "@components/features/EncryptedPost.astro";
-import KatexManager from "@components/features/KatexManager.astro";
+// KaTeX 关闭期间不导入，避免 katex.min.css 被打进文章页
+// import KatexManager from "@components/features/KatexManager.astro";
 import License from "@components/misc/License.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
@@ -215,8 +216,10 @@ const seriesData = await getSeriesPosts(entry);
   encrypted={!!entry.data.password}
   bannerPostMeta={bannerPostMeta}
 >
-  <!-- KaTeX 按需加载 - 仅在文章页面 -->
-  <KatexManager slot="head" />
+  <!-- KaTeX 按需加载 - 仅在文章页面。
+       本站暂无公式内容，先停用；需要公式时取消注释这一行 +
+       astro.config.mjs 里的 remarkMath / rehypeKatex -->
+  <!-- <KatexManager slot="head" /> -->
 
   <!-- og:article 结构化元数据 -->
   <meta slot="head" property="article:published_time" content={entry.data.published.toISOString()} />
