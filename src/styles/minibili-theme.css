@@ -302,6 +302,67 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	border-bottom: 1px solid var(--mb-hairline);
 }
 
+/* ==========================================================================
+   无障碍：对比度修正（Lighthouse 无障碍 95 → 100）
+
+   报出来的三处不达标都是同一个原因：浅色底上用了"中间调"文字——
+   1) .text-50 = 黑 50% ≈ 3.9:1，卡片上的日期/分类/标签都是它；
+   2) --btn-content 做在 --btn-regular-bg 上的按钮文字 ≈ 4.2:1（置顶、了解更多）；
+   3) 直接用 --primary 当文字色（页脚 RSS/Atom…）≈ 3:1。
+
+   修法：把"填充用强调色"和"文字用强调色"拆成两个变量，
+   --primary 继续负责底色/描边/hover，文字统一走更深一档的 --mb-accent-text。
+   ========================================================================== */
+:root {
+	--btn-content: oklch(0.46 0.13 var(--hue)); /* 原 0.55 → 按钮小字 5.6:1 */
+	--mb-accent-text: oklch(0.5 0.17 var(--hue)); /* 链接文字用，白底 6:1 */
+}
+
+:root.dark {
+	--btn-content: oklch(0.82 0.09 var(--hue)); /* 原 0.75 */
+	--mb-accent-text: oklch(0.84 0.13 var(--hue));
+}
+
+/* 次级文字加深：50% → 68%（深色模式 72%），标签/日期/分类都吃这条 */
+.text-50 {
+	color: rgb(0 0 0 / 0.68);
+}
+:root.dark .text-50 {
+	color: rgb(255 255 255 / 0.72);
+}
+
+/* 图标级灰也要过 3:1 */
+.text-30 {
+	color: rgb(0 0 0 / 0.45);
+}
+:root.dark .text-30 {
+	color: rgb(255 255 255 / 0.5);
+}
+
+/* 所有把 --primary 当文字色的地方（页脚链接、卡片链接等）统一换成文字档 */
+.text-\(--primary\) {
+	color: var(--mb-accent-text);
+}
+
+/* 键盘可达性：焦点环，鼠标点击不会出现 */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+	outline: 2px solid var(--mb-accent-text);
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+
+/* ==========================================================================
+   排版统一：标题与正文的呼吸感
+   ========================================================================== */
+:where(h1, h2, h3, h4, h5) {
+	text-wrap: balance;
+	letter-spacing: -0.01em;
+}
+
+:where(p, li, blockquote) {
+	text-wrap: pretty;
+}
+
 /* 尊重"减少动效"偏好 */
 @media (prefers-reduced-motion: reduce) {
 	.card-base,

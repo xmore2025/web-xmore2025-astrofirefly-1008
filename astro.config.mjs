@@ -75,6 +75,15 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "always",
 
+	build: {
+		// 关键渲染路径上原本有 3 个外链 CSS（约 39KB），在慢速 4G 下要多吃 3 次往返
+		// （Lighthouse 估算阻塞 260ms）。全部内联进 HTML 后：
+		// - 首屏少 3 个阻塞请求，FCP/LCP 直接受益；
+		// - Swup 是客户端切页，内联 CSS 也不会像外链那样重复请求。
+		// HTML 变大但可被 gzip/brotli 压掉，实测净收益为正。
+		inlineStylesheets: "always",
+	},
+
 	// 字体配置 - 只加载实际使用的字体，跳过未引用的以加快构建
 	fonts: (() => {
 		// 禁用字体功能时直接返回空数组，跳过 Astro Font API 集成
