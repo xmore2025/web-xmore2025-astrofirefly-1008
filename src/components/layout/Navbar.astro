@@ -49,7 +49,8 @@ const navbarBlur =
 		? (backgroundWallpaper.banner?.navbar?.blur ?? 20)
 		: 0;
 
-// 获取导航栏标题，如果没有设置则使用 siteConfig.title
+// 获取导航栏标题：品牌文字已按要求移除，只留图标。
+// 这里保留取值逻辑，方便以后想恢复时直接在模板里补回 {navbarTitle}
 const navbarTitle = siteConfig.navbar.title || siteConfig.title;
 
 // 获取导航栏宽度配置
@@ -186,7 +187,6 @@ const logoVariants = await Promise.all(
                                     ) : (
                                         <Icon name="material-symbols:home-pin-outline" class="navbar-logo text-[1.75rem] mb-1 mr-2" />
                                     )}
-                    {navbarTitle}
                 </div>
             </a>
             <div class:list={[

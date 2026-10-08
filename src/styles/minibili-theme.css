@@ -379,6 +379,33 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	margin-bottom: max(5rem, 8vh) !important;
 }
 
+/* ── 横幅文字块左对齐（Looka 式排版）────────────────
+   垂直位置保持上面的"贴下"不动，水平从居中改为左对齐。
+   文字容器与下方内容栅格同源：同一个 --page-width + 相同内边距，
+   标题左缘正好压在左栏卡片的左缘上，上下视觉锚点连成一条线 */
+#banner-overlay-container .banner-home-text-overlay {
+	justify-content: flex-start !important;
+	text-align: left !important;
+}
+
+#banner-overlay-container .banner-home-text-overlay > div {
+	text-align: left !important;
+	width: 100% !important; /* 覆盖组件里的 w-4/5 lg:w-3/4 */
+	max-width: var(--page-width) !important;
+	margin-inline: auto !important; /* 窄屏时整体居中后内部仍左对齐 */
+	padding-inline: 0.5rem; /* 对齐内容区 px-2 */
+}
+
+@media (min-width: 768px) {
+	#banner-overlay-container .banner-home-text-overlay > div {
+		padding-inline: 1rem; /* md:px-4 */
+	}
+}
+
+#banner-overlay-container .banner-home-text-overlay .banner-links {
+	justify-content: flex-start !important;
+}
+
 /* 尊重"减少动效"偏好 */
 @media (prefers-reduced-motion: reduce) {
 	.card-base,
