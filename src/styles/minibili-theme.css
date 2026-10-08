@@ -372,14 +372,11 @@ html[data-tag-style] .tag-item .tag-count-badge,
 	align-items: flex-end !important;
 }
 
+/* 必须带 !important：banner-home.css 在所有断点都写了 margin-bottom: 0 !important。
+   下边距取 max(5rem, 8vh)：内容面板会叠住横幅底部约 3.5rem，5rem 保证
+   链接图标永远在面板之上；大屏时用 8vh 让间距随横幅等比放大 */
 #banner-overlay-container .banner-home-text-overlay > div {
-	margin-bottom: 8vh;
-}
-
-@media (max-height: 720px), (max-width: 640px) {
-	#banner-overlay-container .banner-home-text-overlay > div {
-		margin-bottom: 3.5rem;
-	}
+	margin-bottom: max(5rem, 8vh) !important;
 }
 
 /* 尊重"减少动效"偏好 */
