@@ -6,8 +6,9 @@ export const profileConfig: ProfileConfig = {
 	// 1. public 目录（以 "/" 开头，不优化）："/assets/images/avatar.webp"
 	// 2. src 目录（不以 "/" 开头，自动优化但会增加构建时间，推荐）："assets/images/avatar.webp"
 	// 3. 远程 URL："https://example.com/avatar.jpg"
-	// 左栏资料卡图片（原头像位）。灰度图 + 青碧色主题，卡片区不与壁纸抢注意力
-	avatar: "assets/images/site-card.jpg",
+	// 左栏资料卡头像（小熊猫花花，源文件为 E:\Desk-wall-bztp\SVG-ICON\熊猫-花花\*.svg，
+	// 用 sharp 渲染成 512px webp，生成脚本见仓库历史 commit b58318f 之后的提交）
+	avatar: "assets/images/avatar-red-panda.webp",
 
 	// 名字（页脚、资料卡、RSS 作者名统一取这里，与页脚 © 文案保持一致）
 	name: "xmore",
