@@ -135,24 +135,49 @@
     overscroll-behavior-x: contain;
   }
 
+  /* [grid] ... [/grid] 语法生成的多图网格容器（见 src/plugins/remark-image-grid.js）
+     目标：同一行内所有图片等高、图注底部对齐，且不同长宽比的图片不会被拉伸变形。 */
   .image-grid {
     @apply items-stretch;
-    
+
     center {
       @apply h-full w-full;
-      
+
       figure {
         @apply flex flex-col h-full w-full m-0 p-0;
-        
+
         img {
           @apply object-cover w-full grow rounded-xl m-0;
           /* 使图片自动填满所在网格高度（自适应裁剪居中，不拉伸变形） */
           height: 100%;
         }
-        
+
         figcaption {
           @apply mt-2 mb-0;
         }
+      }
+    }
+
+    /* 没有 alt 的图片不会被 rehype-figure 包成 center > figure，
+       以及被链接包裹的图片（例如可点击跳转的图），都要同样补齐等高裁剪，
+       否则同一格里会出现"一张撑满、一张原尺寸"的参差。 */
+    > img,
+    > a > img,
+    figure > img {
+      @apply object-cover w-full rounded-xl m-0;
+      height: 100%;
+    }
+
+    > a,
+    figure {
+      @apply block h-full w-full m-0 p-0;
+    }
+
+    figure {
+      @apply flex flex-col;
+
+      figcaption {
+        @apply mt-2 mb-0;
       }
     }
   }

@@ -6,7 +6,8 @@ import { visit } from "unist-util-visit";
  * It parses markdown blocks surrounded by `[grid]` and `[/grid]` tags and wraps
  * the contained images in a styled `div` container with a grid layout.
  * The column count is evaluated automatically based on the number of inserted images
- * inside the grid tags (up to 4 columns).
+ * inside the grid tags (up to 4 columns), and can be overridden explicitly with
+ * `[grid cols=3]`.
  *
  * Grids are processed not only at the document root but also inside nested block
  * containers (admonitions, blockquotes, lists, directives), so `[grid]` / `[/grid]`
@@ -14,6 +15,12 @@ import { visit } from "unist-util-visit";
  *
  * Example:
  * [grid]
+ * ![image1](/url1)
+ * ![image2](/url2)
+ * [/grid]
+ *
+ * Explicit column count (automatic detection would pick 3 here):
+ * [grid cols=2]
  * ![image1](/url1)
  * ![image2](/url2)
  * [/grid]
@@ -32,13 +39,31 @@ const BLOCK_CONTAINER_TYPES = new Set([
 	"listItem",
 ]);
 
-/** Resolve the responsive column class for a grid with the given image count. */
-function getGridColumnClass(imgCount) {
-	const cols = imgCount || 2;
-	if (cols === 1) return "md:grid-cols-1";
-	if (cols === 2) return "md:grid-cols-2";
-	if (cols === 3) return "md:grid-cols-3";
-	return "md:grid-cols-4";
+// `[grid]` / `[grid cols=N]` — leading whitespace is allowed so the tag can be
+// written indented (e.g. inside a list item) without breaking detection.
+const GRID_START_RE = /^\s*\[grid(?:\s+cols=(\d+))?\]\s*/;
+const GRID_END_RE = /\s*\[\/grid\]\s*$/;
+
+/**
+ * Resolve the responsive column classes for a grid with the given image count.
+ *
+ * 断点策略：窄屏保持单列（三、四图竖排太占屏），
+ * ≥640px 起对 3 列以上的网格先铺两列，≥768px 再铺满目标列数。
+ */
+function getGridColumnClasses(imgCount) {
+	const cols = Math.min(Math.max(imgCount || 2, 1), 4);
+	const classes = ["grid-cols-1"];
+	if (cols >= 3) classes.push("sm:grid-cols-2");
+	if (cols === 1) return classes;
+	return [...classes, `md:grid-cols-${cols}`];
+}
+
+/** Read an explicit `cols=N` override from a `[grid ...]` tag, if present. */
+function readExplicitCols(value) {
+	const match = value.match(GRID_START_RE);
+	if (!match || match[1] === undefined) return null;
+	const parsed = Number.parseInt(match[1], 10);
+	return Number.isNaN(parsed) ? null : parsed;
 }
 
 /** Count all images found inside the given nodes, recursively. */
@@ -52,21 +77,22 @@ function countImages(nodes) {
 	return imgCount;
 }
 
+/** Drop text nodes that became empty after stripping the grid tags. */
+function dropEmptyTextNodes(children) {
+	return children.filter((n) => n.type !== "text" || n.value.trim() !== "");
+}
+
 /** Wrap the given nodes into a grid `div` paragraph node. */
-function buildGridNode(nodes) {
+function buildGridNode(nodes, explicitCols = null) {
+	const cols = explicitCols ?? countImages(nodes);
 	return {
 		type: "paragraph",
 		data: {
 			hName: "div",
 			hProperties: {
-				className: [
-					"image-grid",
-					"grid",
-					"grid-cols-1",
-					getGridColumnClass(countImages(nodes)),
-					"gap-4",
-					"my-4",
-				],
+				className: ["image-grid", "grid", "gap-4", "my-4", ...getGridColumnClasses(cols)],
+				dataImageGrid: "",
+				dataCols: String(Math.min(Math.max(cols || 2, 1), 4)),
 			},
 		},
 		children: nodes,
@@ -81,6 +107,7 @@ function processGridBlocks(children) {
 	const newChildren = [];
 	let inGrid = false;
 	let gridChildren = [];
+	let explicitCols = null;
 
 	for (let i = 0; i < children.length; i++) {
 		const node = children[i];
@@ -90,77 +117,43 @@ function processGridBlocks(children) {
 			const first = node.children[0];
 			const last = node.children[node.children.length - 1];
 
-			let containsGridStart = false;
-			let containsGridEnd = false;
-
-			if (first.type === "text" && first.value.trim().startsWith("[grid]")) {
-				containsGridStart = true;
-			}
-			if (last.type === "text" && last.value.trim().endsWith("[/grid]")) {
-				containsGridEnd = true;
-			}
+			const containsGridStart =
+				first.type === "text" && GRID_START_RE.test(first.value);
+			const containsGridEnd = last.type === "text" && GRID_END_RE.test(last.value);
 
 			// Case 1: [grid] and [/grid] in the SAME paragraph
 			if (containsGridStart && containsGridEnd && !inGrid) {
-				first.value = first.value.replace(/^\s*\[grid\]\s*/, "");
-				last.value = last.value.replace(/\s*\[\/grid\]\s*$/, "");
+				const cols = readExplicitCols(first.value);
+				first.value = first.value.replace(GRID_START_RE, "");
+				last.value = last.value.replace(GRID_END_RE, "");
 
-				// count images in the grid
-				const imgCount = node.children.filter(
-					(n) =>
-						n.type === "image" ||
-						(n.type === "link" &&
-							n.children &&
-							n.children.some((c) => c.type === "image")),
-				).length;
-				const cols = imgCount || 2;
-				const mdColClass = getGridColumnClass(cols);
-
-				newChildren.push({
-					type: "paragraph",
-					data: {
-						hName: "div",
-						hProperties: {
-							className: [
-								"image-grid",
-								"grid",
-								"grid-cols-1",
-								mdColClass,
-								"gap-4",
-								"my-4",
-							],
-						},
-					},
-					children: node.children.filter(
-						(n) => n.type !== "text" || n.value.trim() !== "",
-					), // Remove empty text nodes left over
-				});
+				newChildren.push(
+					buildGridNode(dropEmptyTextNodes(node.children), cols),
+				);
 				continue;
 			}
 
-			// Case 2: Multi-paragraph
+			// Case 2: Multi-paragraph — opening tag
 			if (!inGrid && containsGridStart) {
 				inGrid = true;
-				first.value = first.value.replace(/^\s*\[grid\]\s*/, "");
-				if (node.children.length === 1 && first.value.trim() === "") {
-					// [grid] stood alone, ignore this node
-				} else {
-					gridChildren.push(node);
-				}
+				explicitCols = readExplicitCols(first.value);
+				first.value = first.value.replace(GRID_START_RE, "");
+				const rest = dropEmptyTextNodes(node.children);
+				// [grid] stood alone on its own line: nothing else to keep
+				if (rest.length > 0) gridChildren.push({ ...node, children: rest });
 				continue;
 			}
 
+			// Case 2: Multi-paragraph — closing tag
 			if (inGrid && containsGridEnd) {
 				inGrid = false;
-				last.value = last.value.replace(/\s*\[\/grid\]\s*$/, "");
-				if (node.children.length === 1 && last.value.trim() === "") {
-					// [/grid] stood alone
-				} else {
-					gridChildren.push(node);
-				}
+				last.value = last.value.replace(GRID_END_RE, "");
+				const rest = dropEmptyTextNodes(node.children);
+				if (rest.length > 0) gridChildren.push({ ...node, children: rest });
 
-				newChildren.push(buildGridNode(gridChildren));
+				newChildren.push(buildGridNode(gridChildren, explicitCols));
 				gridChildren = [];
+				explicitCols = null;
 				continue;
 			}
 		}
