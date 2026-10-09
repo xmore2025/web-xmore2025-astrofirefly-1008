@@ -62,9 +62,27 @@ if (process.env.NODE_ENV === "development") {
 	setMaxListeners(20);
 }
 
+// Cloudflare 适配器：仅当设置 CF_WORKERS 环境变量时才启用按需渲染（SSR）。
+//
+// 为什么默认不启用？官方文档明确写着：
+//   "如果你只是将 Astro 作为静态的站点构建器，则不需要适配器。"
+// 本站没有 prerender = false 的页面，也不依赖 Cloudflare 绑定（KV/D1/R2/sessions），
+// 纯静态预渲染 + `wrangler.jsonc` 的 assets.directory 托管是成本最低、
+// 稳定性最好的形态（Workers 静态资源请求不计费、全部命中 CDN 缓存）。
+//
+// 什么时候需要？将来要加服务端功能（actions / 服务器群岛 / 会话 / 绑定）时，
+// 在 CF Workers Builds 的构建变量里设置 CF_WORKERS=1 即可切换到适配器模式。
+//
+// 两个适配选项说明（@astrojs/cloudflare v14）：
+// - prerenderEnvironment: "node"：预渲染页继续用 Node 跑，因为构建脚本里
+//   generate-lqips / subset-fonts 依赖 sharp、node:fs，workerd 不支持。
+// - imageService: "compile"：v13 起默认值改成了 "cloudflare-binding"（运行时调
+//   Cloudflare Images 转换），本站图片优化是构建期用 sharp 完成的，
+//   保持 compile 才不会切换到按次计费的 Images 绑定。
 const adapter = process.env.CF_WORKERS
 	? cloudflare({
 			prerenderEnvironment: "node",
+			imageService: "compile",
 		})
 	: undefined;
 

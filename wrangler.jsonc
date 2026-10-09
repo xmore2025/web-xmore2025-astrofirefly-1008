@@ -6,8 +6,12 @@
 	// Cloudflare Worker 名称规则：只允许字母数字和短横线，禁止下划线。
 	// 对应仓库 xmore2025/web-xmore2025-astrofirefly-1008（已与仓库名统一为连字符写法）
 	"name": "web-xmore2025-astrofirefly-1008",
+	// 兼容性日期：保持在最近一个稳定日期，新 Workers 行为改动不会立即影响本站。
 	"compatibility_date": "2026-10-07",
-	"compatibility_flags": ["nodejs_compat"],
+	// 本站是纯静态资源 Worker（没有 Worker 脚本在跑），因此不需要 nodejs_compat。
+	// 官方文档里 Worker + 静态资源的最小配置也不含此标志；
+	// 若将来启用 adapter（CF_WORKERS=1）做按需渲染，再把 nodejs_compat 加回来。
+	"compatibility_flags": [],
 	"assets": {
 		"directory": "./dist",
 		// Workers 静态资源默认返回平台自带的 404，站点自己的 dist/404.html 不会生效；
