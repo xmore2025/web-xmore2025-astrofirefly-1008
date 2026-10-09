@@ -76,12 +76,19 @@ export default defineConfig({
 	trailingSlash: "always",
 
 	build: {
-		// 关键渲染路径上原本有 3 个外链 CSS（约 39KB），在慢速 4G 下要多吃 3 次往返
-		// （Lighthouse 估算阻塞 260ms）。全部内联进 HTML 后：
-		// - 首屏少 3 个阻塞请求，FCP/LCP 直接受益；
-		// - Swup 是客户端切页，内联 CSS 也不会像外链那样重复请求。
-		// HTML 变大但可被 gzip/brotli 压掉，实测净收益为正。
-		inlineStylesheets: "always",
+		// 实测结论（2026-10-09，28 页 gzip 口径）：外链 CSS 比全量内联更划算。
+		//
+		//                   首次访问首页   之后每页    全站 28 页合计
+		//   外链 (auto)      73.4KB        20.5KB     636.8KB
+		//   内联 (always)    72.6KB        41.3KB    1171.3KB
+		//
+		// 首屏字节数两者几乎相同（内联的 CSS 只是从 .css 搬进 .html），
+		// 但内联会让每一页都重复携带那 30KB CSS，站内翻页越省流量的外链越占优；
+		// 本站用 Swup 客户端切页，CSS 只下载一次后长期命中强缓存。
+		// 内联唯一的收益是"少 1 个阻塞 RTT"（Lighthouse 慢速 4G 估算 −260ms），
+		// 换算下来不值当——尤其真实用户多在宽带/4G 而非 Lighthouse 的模拟慢速网络。
+		// 若以后想再试内联，把这里改成 "always" 即可，注释保留供对照。
+		inlineStylesheets: "auto",
 	},
 
 	// 字体配置 - 只加载实际使用的字体，跳过未引用的以加快构建
