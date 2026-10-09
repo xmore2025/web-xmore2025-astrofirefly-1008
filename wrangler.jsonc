@@ -1,4 +1,8 @@
 {
+	// 部署目标账号：xmore2025@proton.me（account id 136ac8b333f04b6782da3395ed4110ad）。
+	// 本机另缓存着一个 Xmind-2046@outlook.com 的账号，wrangler 登录后会同时列出两个，
+	// 因此账号 id 固定写在本地 .env 的 CLOUDFLARE_ACCOUNT_ID（已 gitignore），
+	// 不要在这里写 account_id，避免把账号标识提交进公开仓库。
 	// Cloudflare Worker 名称规则：只允许字母数字和短横线，禁止下划线。
 	// 对应仓库 xmore2025/web-xmore2025-astrofirefly-1008（已与仓库名统一为连字符写法）
 	"name": "web-xmore2025-astrofirefly-1008",

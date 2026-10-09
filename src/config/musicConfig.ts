@@ -45,6 +45,10 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	// lrc: "/assets/music/lrc/使一颗心免于哀伤-哼唱.lrc",
 	// 2. 或者直接填入歌词字符串内容
 	// lrc: "[00:00.00]歌词内容...",
+	// 注意：播放器当前是关闭的（showInNavbar / showInSidebar 均为 false），
+	// 所以原本的 mp3(915KB) + 封面(34KB) 已从 public/assets/music/ 删除，
+	// 每次部署不用再上传这 950KB 用不到的资源。以后要启用播放器，把音频和
+	// 封面放回 public/assets/music/ 与 public/assets/music/cover/ 即可。
 	local: {
 		playlist: [
 			{
