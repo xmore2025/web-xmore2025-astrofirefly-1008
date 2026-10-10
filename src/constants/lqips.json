@@ -6,5 +6,7 @@
   "src:assets/images/MobileWallpaper/banner-unsplash.webp": "d2c4a3b2b19a1e4759",
   "src:assets/images/DesktopWallpaper/banner-unsplash.webp": "d2c4a3b2b19a1e4759",
   "src:assets/images/site-card.jpg": "565656878787afafaf",
-  "src:assets/images/avatar-red-panda.webp": "67493a8e6049271814"
+  "src:assets/images/avatar-red-panda.webp": "67493a8e6049271814",
+  "src:assets/images/posts/perf-compare.webp": "2a24211d1919131519",
+  "src:assets/images/posts/deploy-pipeline.webp": "1e202417191d17181f"
 }
