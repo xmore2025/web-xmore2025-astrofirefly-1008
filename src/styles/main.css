@@ -1,3 +1,9 @@
+/* 霞鹜文楷（LXGW WenKai Screen R）—— 中文标题字体。
+   官方 webfont 包把字库切成 97 个 woff2 分片，每条 @font-face 都带 unicode-range，
+   浏览器只下载「页面上真的出现了的字符」所在的那几片（单片约 51KB）。
+   ⚠ 只在标题上引用它：正文一旦用上，会多触发十几片下载，首屏字体体积就压不住了。
+   分片由 Vite 打包进 dist/_astro，不会进 Git。 */
+@import 'lxgw-wenkai-screen-webfont/lxgwwenkaiscreenr.css';
 @import 'tailwindcss';
 @import './layout-styles.css';
 @import './navbar.css';
@@ -24,6 +30,23 @@
     'PingFang SC', 'HarmonyOS Sans SC', 'Source Han Sans SC',
     'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  /* 标题字体栈：拉丁字符先命中 Inter（无中文字形，会自动回落到霞鹜），
+     中文再交给 LXGW WenKai Screen R，最后才是系统中文黑体。 */
+  --font-heading:
+    'Inter', 'LXGW WenKai Screen R', ui-sans-serif, system-ui, 'PingFang SC',
+    'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 标题统一走 --font-heading（霞鹜文楷），正文保持 --font-sans 系统字体栈。
+   控制在这一组选择器内，是为了把触发下载的汉字量限制在标题里。 */
+h1,
+h2,
+h3,
+h4,
+.banner-title,
+.banner-page-title-text,
+.post-card-title {
+  font-family: var(--font-heading);
 }
 
 /* 自定义工具类 - Tailwind v4 使用 @utility 定义 */

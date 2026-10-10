@@ -38,12 +38,13 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	src: {
 		// 桌面背景图片（支持单张或多张随机）
 		// 单张固定图：随机轮换会让列表页视觉不稳定，简约站固定一张即可
-		// 自定义壁纸：Unsplash（vlad-d），已用 sharp 预压到 1920 宽 / 105KB，
-		// 构建时 Astro 再按 1280/1920 生成响应式 avif/webp
-		desktop: "assets/images/DesktopWallpaper/banner-unsplash.webp",
+		// 自定义壁纸：sky-7911655（天空），原图 6658×4439 / 4.3MB，
+		// 已用 sharp 预压到 1920 宽 / 34KB（比上一张 105KB 省 67%），
+		// 构建时 Astro 再按 1280/1920 生成响应式 webp
+		desktop: "assets/images/DesktopWallpaper/banner-sky.webp",
 		// 移动背景图片（支持单张或多张随机）
-		// 同一张图预压到 1080 宽 / 32KB，避免手机端下载桌面大图
-		mobile: "assets/images/MobileWallpaper/banner-unsplash.webp",
+		// 同一张图预压到 1080 宽 / 14KB，避免手机端下载桌面大图
+		mobile: "assets/images/MobileWallpaper/banner-sky.webp",
 		// 背景视频播放地址
 		// 支持单个视频路径（字符串）或多个视频循环（数组，参考上面壁纸配置）
 		// 支持远程视频URL，本地视频请放在 public/assets/videos/ 目录下
@@ -53,9 +54,9 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 横幅壁纸和全屏壁纸共享配置
 	common: {
 		// 壁纸遮罩暗度，让横幅文字显示更清晰，0-1之间，值越大越暗
-		// 0.2 → 0.35：新壁纸上半部偏亮（实测亮度 0.6），白色标题/副标题压不住，
-		// 实测 0.35 时白字对比度约 5.8:1，同时照片质感还在
-		dimOpacity: 0.35,
+		// 0.35 → 0.30：新壁纸实测整体亮度 0.50、横幅显示区（顶部 35%）0.54，
+		// 比上一张（0.6）更暗，白字压得住，遮罩可以退一档、多留照片质感
+		dimOpacity: 0.3,
 		// 多视频播放模式："order" 顺序循环，"random" 随机切换（仅当 playerUrl 为数组时生效）
 		playerMode: "random",
 		// 主页横幅文字
@@ -65,11 +66,12 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 主页横幅主标题
 			title: "Xmore's Blog",
 			// 主页横幅主标题字体大小（配合全局标题降档，这里同步收敛）
-			titleSize: "3.25rem",
+			// 3.25rem → 2.75rem：横幅是照片不是海报，52px 主标题压过内容区
+			titleSize: "2.75rem",
 			// 主页横幅副标题
 			subtitle: ["写下来，才算发生过"],
-			// 主页横幅副标题字体大小
-			subtitleSize: "1.5rem",
+			// 主页横幅副标题字体大小（1.5rem → 1.25rem，与主标题拉开层级）
+			subtitleSize: "1.25rem",
 			typewriter: {
 				// 是否启用打字机效果
 				// 打字机开启 → 循环显示所有副标题

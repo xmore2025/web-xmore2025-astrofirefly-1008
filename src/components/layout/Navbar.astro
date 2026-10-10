@@ -201,8 +201,9 @@ const logoVariants = await Promise.all(
             </div>
             <div class="flex col-start-3 justify-self-end">
                 <!--<SearchPanel client:load>-->
+                <!-- 搜索面板要点击/快捷键才打开，用 idle：首屏 JS 不与 LCP 抢带宽 -->
                 <Search
-                    client:load
+                    client:idle
                 />
                 {musicPlayerConfig.showInNavbar && (
                     <button aria-label={i18n(I18nKey.music)} aria-controls="music-nav-panel" aria-expanded="false" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="music-player-switch">
@@ -227,7 +228,8 @@ const logoVariants = await Promise.all(
                         </button>
                 )}
                 {/* @ts-ignore */}
-                <LightDarkSwitch client:load></LightDarkSwitch>
+                {/* 亮暗切换按钮：主题本身由 head 内联脚本先行应用，按钮只需 idle 水合 */}
+                <LightDarkSwitch client:idle></LightDarkSwitch>
                 <button aria-label="Menu" aria-controls="nav-menu-panel" aria-expanded="false" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 lg:hidden!" id="nav-menu-switch">
                     <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
                 </button>
@@ -238,7 +240,8 @@ const logoVariants = await Promise.all(
                 <MusicPlayer />
             </div>
         )}
-        {isDisplaySettingsEnabled && <DisplaySettings client:load></DisplaySettings>}
+        {/* 显示设置面板：点开才需要交互，idle 足够 */}
+        {isDisplaySettingsEnabled && <DisplaySettings client:idle></DisplaySettings>}
     </div>
 </div>
 

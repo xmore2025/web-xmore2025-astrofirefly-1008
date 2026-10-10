@@ -15,8 +15,23 @@
     }
   }
 
+  /* 正文标题字号标度：整体收敛一档。
+     页面主标题（文章页 h1）是 1.9rem，正文里的 h1 原本 1.875rem 几乎一样大，
+     层级压不住；现在 h1 1.5rem / h2 1.25rem / h3 1.125rem，与正文 1rem 拉开梯度。 */
   h1 {
-    @apply text-3xl;
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+
+  h4 {
+    @apply text-base;
   }
 
   h1,

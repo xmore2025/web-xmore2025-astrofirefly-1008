@@ -62,11 +62,11 @@ export const siteConfig: SiteConfig = {
 		// 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
 		// 全站固定单一强调色。视觉统一的硬规则是「只用一个强调色」，
 		// 所以 displaySettingsConfig 里的主题色选择器保持默认关闭。
-		// 当前色相 196 = 青碧蓝，取自壁纸的主色：
-		// 壁纸饱和像素里 190–209° 占 53%（青蓝），30–49° 占 46%（暖沙），
-		// 取青蓝为主强调色、暖沙留作图片自身的点缀，整站不再出现第二种强调色。
-		// 换色只改这一处：粉 343（旧）/ 墨蓝 201 / 蓝 264。
-		hue: 196,
+		// 当前色相 220 = 天青蓝，取自当前壁纸（sky-7911655）的主色：
+		// 实测饱和像素里 220–229° 占绝大多数（纯正天空蓝），
+		// 强调色跟着壁纸走，整站只保留这一种强调色。
+		// 换色只改这一处：青碧蓝 196（上一张壁纸）/ 粉 343 / 蓝 264。
+		hue: 220,
 		// 默认模式："light" 亮色，"dark" 暗色，"system" 跟随系统
 		defaultMode: "system",
 	},
@@ -104,9 +104,11 @@ export const siteConfig: SiteConfig = {
 		// 使用 Astro 图标库时不需要设置 valueDark，图标会自动跟随主题亮暗色切换
 		logo: {
 			type: "image",
-			value: "assets/images/logo/firefly-light.png",
-			valueDark: "assets/images/logo/firefly-dark.png",
-			alt: "🍀",
+			// 换掉主题自带的 firefly 图标：与 favicon / 头像统一成同一只小熊猫，
+			// 亮暗色共用一张（不设 valueDark），src 目录的图片会走 Astro 资产优化。
+			// 想换成自己的图标：把 PNG 放到 src/assets/images/logo/ 下改这里的两行即可。
+			value: "assets/images/avatar-red-panda.webp",
+			alt: "Xmore's Blog",
 		},
 		// 导航栏标题
 		title: "Xmore's Blog",
