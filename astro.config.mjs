@@ -149,8 +149,14 @@ export default defineConfig({
 
 	// 图像优化配置
 	image: {
-		// 组件可自行传入 layout/widths；这里只控制 Markdown 正文图片
-		layout: "none",
+		// constrained = Astro 5.10+ 的响应式图片默认值：自动生成 srcset / sizes，
+		// 并按断点产出多尺寸（手机不会再去下载桌面大图）。
+		// 之前这里是 "none"：实测正文图片会退化成单一尺寸、不带 srcset（见提交说明）。
+		// 组件依旧可以用 layout/widths 属性单独覆盖，这里只管 Markdown 正文图片的默认行为。
+		layout: "constrained",
+		// 响应式样式（Astro 默认 true）：注入 [data-astro-image] 的 width/height 规则，
+		// 保证响应式图片不会撑破容器、也不会造成 CLS 抖动。
+		responsiveStyles: true,
 	},
 
 	integrations: [
