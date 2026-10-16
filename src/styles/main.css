@@ -1,7 +1,8 @@
-/* 霞鹜文楷（LXGW WenKai Screen R）—— 中文标题字体。
+/* 霞鹜文楷（LXGW WenKai Screen R）—— 全站中文字体。
    官方 webfont 包把字库切成 97 个 woff2 分片，每条 @font-face 都带 unicode-range，
    浏览器只下载「页面上真的出现了的字符」所在的那几片（单片约 51KB）。
-   ⚠ 只在标题上引用它：正文一旦用上，会多触发十几片下载，首屏字体体积就压不住了。
+   全站统一使用霞鹜文楷，给出温润书卷气的阅读体验；分片按需加载，
+   首屏只会下载当前页面可见字符所在的几片，后续页面命中浏览器缓存。
    分片由 Vite 打包进 dist/_astro，不会进 Git。 */
 @import 'lxgw-wenkai-screen-webfont/lxgwwenkaiscreenr.css';
 @import 'tailwindcss';
@@ -26,19 +27,18 @@
 /* Tailwind v4 配置 - 从 tailwind.config.cjs 迁移 */
 @theme {
   --font-sans:
-    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Inter', 'LXGW WenKai Screen R', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
     'PingFang SC', 'HarmonyOS Sans SC', 'Source Han Sans SC',
     'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  /* 标题字体栈：拉丁字符先命中 Inter（无中文字形，会自动回落到霞鹜），
-     中文再交给 LXGW WenKai Screen R，最后才是系统中文黑体。 */
+  /* 标题字体栈：与正文统一，拉丁字符先命中 Inter，中文交给 LXGW WenKai Screen R。 */
   --font-heading:
     'Inter', 'LXGW WenKai Screen R', ui-sans-serif, system-ui, 'PingFang SC',
     'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
 }
 
-/* 标题统一走 --font-heading（霞鹜文楷），正文保持 --font-sans 系统字体栈。
-   控制在这一组选择器内，是为了把触发下载的汉字量限制在标题里。 */
+/* 全站统一走 --font-heading（霞鹜文楷），正文 --font-sans 也包含霞鹜文楷，
+   给出一致的书卷气阅读体验。控制在这一组选择器内，统一标题字体栈。 */
 h1,
 h2,
 h3,

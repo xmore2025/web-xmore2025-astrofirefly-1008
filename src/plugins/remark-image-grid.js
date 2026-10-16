@@ -90,7 +90,13 @@ function buildGridNode(nodes, explicitCols = null) {
 		data: {
 			hName: "div",
 			hProperties: {
-				className: ["image-grid", "grid", "gap-4", "my-4", ...getGridColumnClasses(cols)],
+				className: [
+					"image-grid",
+					"grid",
+					"gap-4",
+					"my-4",
+					...getGridColumnClasses(cols),
+				],
 				dataImageGrid: "",
 				dataCols: String(Math.min(Math.max(cols || 2, 1), 4)),
 			},
@@ -119,7 +125,8 @@ function processGridBlocks(children) {
 
 			const containsGridStart =
 				first.type === "text" && GRID_START_RE.test(first.value);
-			const containsGridEnd = last.type === "text" && GRID_END_RE.test(last.value);
+			const containsGridEnd =
+				last.type === "text" && GRID_END_RE.test(last.value);
 
 			// Case 1: [grid] and [/grid] in the SAME paragraph
 			if (containsGridStart && containsGridEnd && !inGrid) {

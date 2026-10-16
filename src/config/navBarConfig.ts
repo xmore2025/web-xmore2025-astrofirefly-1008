@@ -40,7 +40,7 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 关于
 	links.push(LinkPresets.About);
 
-	// 工具：自己的两个外链小站，收进子菜单，避免导航栏平铺太多项
+	// 工具：自己的两个外链小站，已转为项目条目，下拉选择跳转到项目详情页
 	links.push({
 		name: "工具",
 		url: "#",
@@ -48,14 +48,12 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		children: [
 			{
 				name: "图床",
-				url: "https://maxs-zxtk.204680.xyz",
-				external: true,
+				url: "/projects/tool-image-hosting/",
 				icon: "material-symbols:photo-library",
 			},
 			{
 				name: "导航",
-				url: "https://nav-panel.204680.xyz",
-				external: true,
+				url: "/projects/tool-nav-panel/",
 				icon: "material-symbols:explore",
 			},
 		],

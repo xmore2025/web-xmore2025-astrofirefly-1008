@@ -49,10 +49,6 @@ const navbarBlur =
 		? (backgroundWallpaper.banner?.navbar?.blur ?? 20)
 		: 0;
 
-// 获取导航栏标题：品牌文字已按要求移除，只留图标。
-// 这里保留取值逻辑，方便以后想恢复时直接在模板里补回 {navbarTitle}
-const navbarTitle = siteConfig.navbar.title || siteConfig.title;
-
 // 获取导航栏宽度配置
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 const navbarMenuAlign = siteConfig.navbar.menuAlign ?? "center";
